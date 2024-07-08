@@ -11,18 +11,20 @@ const SignatureVerification = () => {
   const [cip8Status, setCip8Status] = useState(null);
   const [cip30Status, setCip30Status] = useState(null);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Handle signature verification
   const handleVerifySignature = async () => {
+    setIsLoading(true);
     const response = await fetch(
       `/api/verify?publicKey=${publicKey}&message=${message}&signature=${signature}`,
     );
 
     const data = await response.json();
-    console.log(data);
     setCip8Status(data.isCip8Verified);
     setCip30Status(data.isCip30Verified);
     setError(data.error);
+    setIsLoading(false);
   };
 
   // Reset the form
@@ -157,11 +159,11 @@ const SignatureVerification = () => {
         />
         <div className="flex items-center">
           <button
-            disabled={!publicKey || !message || !signature}
+            disabled={(!publicKey || !message || !signature) || isLoading}
             onClick={handleVerifySignature}
             className={`font-semibold flex-1 text-white h-12 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-cf-blue-200 bg-cf-blue-500 hover:bg-cf-blue-400 disabled:bg-cf-blue-500/40 disabled:cursor-not-allowed transition ease-in-out duration-200`}
           >
-            Verify Signature
+            {isLoading? 'Verifying...' : 'Verify Signature'}
           </button>
           <button
             onClick={(e) => handleReset()}
