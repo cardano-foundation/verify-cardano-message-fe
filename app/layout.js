@@ -23,7 +23,7 @@ const switzer = localFont({
 });
 
 export const metadata = {
-  title: "Verification",
+  title: "Cardano Signature Verification",
   description: ":)",
 };
 

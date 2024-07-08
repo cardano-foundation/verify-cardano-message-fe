@@ -10,20 +10,20 @@ const SignatureVerification = () => {
   const [signature, setSignature] = useState("");
   const [cip8Status, setCip8Status] = useState(null);
   const [cip30Status, setCip30Status] = useState(null);
-  // const [error, setError] = useState(null);
+  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   // Handle signature verification
   const handleVerifySignature = async () => {
     setIsLoading(true);
     const response = await fetch(
-      `/api/verify?publicKey=${publicKey}&message=${message}&signature=${signature}`,
+      `/api/verify?publicKey=${publicKey}&message=${message}&signature=${signature}`
     );
 
     const data = await response.json();
     setCip8Status(data.isCip8Verified);
     setCip30Status(data.isCip30Verified);
-    // setError(data.error);
+    setError(data.error);
     setIsLoading(false);
   };
 
@@ -34,7 +34,7 @@ const SignatureVerification = () => {
     setSignature("");
     setCip8Status(null);
     setCip30Status(null);
-    // setError(null);
+    setError(null);
   };
 
   return (
@@ -44,10 +44,14 @@ const SignatureVerification = () => {
       </h1>
       {cip8Status !== null && cip30Status !== null && (
         <div
-          className={`mb-12 grid grid-cols-2 gap-4 px-3 py-2 max-w-md w-full rounded-md shadow-lg ${cip8Status || cip30Status ? "bg-green-700" : "bg-red-800"}`}
+          className={`mb-12 grid grid-cols-2 gap-4 px-3 py-2 max-w-md w-full rounded-md shadow-lg ${
+            cip8Status || cip30Status ? "bg-green-700" : "bg-red-800"
+          }`}
         >
           <p
-            className={`flex justify-center items-center text-lg ${cip8Status || cip30Status ? "text-green-50" : "text-red-50"}`}
+            className={`flex justify-center items-center text-lg ${
+              cip8Status || cip30Status ? "text-green-50" : "text-red-50"
+            }`}
           >
             {cip8Status && (
               <svg
@@ -66,25 +70,30 @@ const SignatureVerification = () => {
               </svg>
             )}
             {!cip8Status && (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                className="size-6 text-red-500"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                />
-              </svg>
+              <div className="has-tooltip">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  className="size-6 text-red-500"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                  />
+                </svg>
+                <span class="tooltip bg-cf-dark px-2 py-1 text-base rounded-md shadow-lg">Error: {error.cip8}</span>
+              </div>
             )}
             <div className="ml-1">CIP-0008</div>
           </p>
           <p
-            className={`flex justify-center items-center text-lg ${cip8Status || cip30Status ? "text-green-50" : "text-red-50"}`}
+            className={`flex justify-center items-center text-lg ${
+              cip8Status || cip30Status ? "text-green-50" : "text-red-50"
+            }`}
           >
             {cip30Status && (
               <svg
@@ -103,20 +112,23 @@ const SignatureVerification = () => {
               </svg>
             )}
             {!cip30Status && (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                className="size-6 text-red-500"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                />
-              </svg>
+              <div className="has-tooltip">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  className="size-6 text-red-500"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                  />
+                </svg>
+                <span class="tooltip bg-cf-dark px-2 py-1 text-base rounded-md shadow-lg">Error: {error.cip30}</span>
+              </div>
             )}
             <div className="ml-1">CIP-0030</div>
           </p>
@@ -159,11 +171,11 @@ const SignatureVerification = () => {
         />
         <div className="flex items-center">
           <button
-            disabled={(!publicKey || !message || !signature) || isLoading}
+            disabled={!publicKey || !message || !signature || isLoading}
             onClick={handleVerifySignature}
             className={`font-semibold flex-1 text-white h-12 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-cf-blue-200 bg-cf-blue-500 hover:bg-cf-blue-400 disabled:bg-cf-blue-500/40 disabled:cursor-not-allowed transition ease-in-out duration-200`}
           >
-            {isLoading? 'Verifying...' : 'Verify Signature'}
+            {isLoading ? "Verifying..." : "Verify Signature"}
           </button>
           <button
             onClick={(e) => handleReset()}
