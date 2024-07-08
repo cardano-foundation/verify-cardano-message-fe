@@ -10,7 +10,7 @@ const SignatureVerification = () => {
   const [signature, setSignature] = useState("");
   const [cip8Status, setCip8Status] = useState(null);
   const [cip30Status, setCip30Status] = useState(null);
-  const [error, setError] = useState(null);
+  // const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   // Handle signature verification
@@ -23,7 +23,7 @@ const SignatureVerification = () => {
     const data = await response.json();
     setCip8Status(data.isCip8Verified);
     setCip30Status(data.isCip30Verified);
-    setError(data.error);
+    // setError(data.error);
     setIsLoading(false);
   };
 
@@ -34,7 +34,7 @@ const SignatureVerification = () => {
     setSignature("");
     setCip8Status(null);
     setCip30Status(null);
-    setError(null);
+    // setError(null);
   };
 
   return (
@@ -120,13 +120,13 @@ const SignatureVerification = () => {
             )}
             <div className="ml-1">CIP-0030</div>
           </p>
-          {!cip8Status && !cip30Status && (error.cip8 || error.cip30) && (
+          {/* {!cip8Status && !cip30Status && (error.cip8 || error.cip30) && (
             <p className="text-red-200 flex justify-center col-span-2 text-base px-4">
               {error.cip8 && "CIP-0008: " + error.cip8}
               {error.cip8 && <br />}
               {error.cip30 && "CIP-0030: " + error.cip30}
             </p>
-          )}
+          )} */}
         </div>
       )}
       <div className="flex flex-col w-full max-w-md">
