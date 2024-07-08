@@ -1,0 +1,4 @@
+[[headers]]
+  for = "/static/wasm/*.wasm"
+  [headers.values]
+    Content-Type = "application/wasm"
