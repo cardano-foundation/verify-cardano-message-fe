@@ -6,15 +6,16 @@ module.exports = {
       asyncWebAssembly: true,
     };
 
-    // Conditionally add file-loader configuration for .wasm files
+    // Adjust file-loader configuration for .wasm files for Netlify compatibility
     if (process.env.USE_FILE_LOADER_FOR_WASM === 'true') {
       config.module.rules.push({
         test: /\.wasm$/,
         type: "javascript/auto",
         loader: "file-loader",
         options: {
-          publicPath: '/_next/static/wasm/',
-          outputPath: 'static/wasm/',
+          // Adjust paths for Netlify deployment
+          publicPath: 'static/wasm/',
+          outputPath: 'out/_next/static/wasm/', // Adjusted for Netlify's output directory
           name: '[name].[hash].[ext]',
         }
       });
@@ -25,11 +26,14 @@ module.exports = {
       config.plugins = [];
     }
 
+    // Add any Netlify-specific plugins or configurations here if needed
+
     return config;
   },
   async headers() {
     return [
       {
+        // Adjust the source path if necessary for Netlify
         source: "/static/wasm/:path*",
         headers: [
           {
@@ -40,4 +44,5 @@ module.exports = {
       },
     ];
   },
+
 };
