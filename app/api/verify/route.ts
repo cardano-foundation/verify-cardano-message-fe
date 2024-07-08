@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import {
   Ed25519Signature,
   PublicKey,
-} from "@emurgo/cardano-serialization-lib-browser";
+} from "@emurgo/cardano-serialization-lib-asmjs";
 import verifyDataSignature from "@cardano-foundation/cardano-verify-datasignature";
 import { Buffer } from "buffer";
 
