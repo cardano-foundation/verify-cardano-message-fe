@@ -35,8 +35,6 @@ const SignatureVerification = () => {
     setError(null);
   };
 
-  console.log(cip30Status);
-
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-3xl font-bold mb-6 text-cf-blue-900">

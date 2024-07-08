@@ -1,38 +1,43 @@
-const path = require('path');
-
 module.exports = {
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, buildId }) => {
     // Enable WebAssembly experiments
     config.experiments = {
       ...config.experiments,
       asyncWebAssembly: true,
     };
 
-    // Resolve WebAssembly modules
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@emurgo/cardano-serialization-lib-nodejs': path.resolve(
-        __dirname,
-        'node_modules/@emurgo/cardano-serialization-lib-nodejs'
-      ),
-    };
-
-    // Customize WebAssembly output
-    if (!isServer) {
-      config.output.webassemblyModuleFilename = 'static/wasm/[modulehash].wasm';
+    // Conditionally add file-loader configuration for .wasm files
+    if (process.env.USE_FILE_LOADER_FOR_WASM === 'true') {
+      config.module.rules.push({
+        test: /\.wasm$/,
+        type: "javascript/auto",
+        loader: "file-loader",
+        options: {
+          publicPath: '/_next/static/wasm/',
+          outputPath: 'static/wasm/',
+          name: '[name].[hash].[ext]',
+        }
+      });
     }
 
-    // Add Node.js polyfills
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      fs: false,
-      path: false,
-      os: false,
-      crypto: false,
-      stream: require.resolve('stream-browserify'),
-      buffer: require.resolve('buffer/'),
-    };
+    // Ensure config.plugins array exists
+    if (!config.plugins) {
+      config.plugins = [];
+    }
 
     return config;
+  },
+  async headers() {
+    return [
+      {
+        source: "/static/wasm/:path*",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "application/wasm",
+          },
+        ],
+      },
+    ];
   },
 };
