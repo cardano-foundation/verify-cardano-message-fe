@@ -4,20 +4,17 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "USE_FILE_LOADER_FOR_WASM=true next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@cardano-foundation/cardano-verify-datasignature": "^1.0.11",
     "@emurgo/cardano-serialization-lib-asmjs": "^11.5.0",
-    "@emurgo/cardano-serialization-lib-browser": "^11.5.0",
-    "@emurgo/cardano-serialization-lib-nodejs": "^11.5.0",
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.13",
     "autoprefixer": "10.4.19",
     "buffer": "^6.0.3",
-    "copy-webpack-plugin": "^6.3.1",
     "next": "14.2.4",
     "postcss": "8.4.39",
     "react": "18.3.1",

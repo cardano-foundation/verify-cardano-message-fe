@@ -1,7 +1,0 @@
-[[headers]]
-  for = "/static/wasm/*.wasm"
-  [headers.values]
-    Content-Type = "application/wasm"
-
-[build.environment]
-  USE_FILE_LOADER_FOR_WASM = "true"
