@@ -44,101 +44,104 @@ const SignatureVerification = () => {
       </h1>
       {cip8Status !== null && cip30Status !== null && (
         <div
-          className={`mb-12 grid grid-cols-2 gap-4 px-3 py-2 max-w-md w-full rounded-md shadow-lg ${
-            cip8Status || cip30Status ? "bg-green-700" : "bg-red-800"
-          }`}
+        className={`mb-12 ${
+          cip8Status && cip30Status ? "grid grid-cols-1" : "flex justify-center"
+        } ${!cip8Status && !cip30Status ? "gap-28" : "gap-4"} px-3 py-2 max-w-md w-full rounded-md shadow-lg ${
+          cip8Status || cip30Status ? "bg-green-700" : "bg-red-800"
+        }`}
         >
-          <p
-            className={`flex justify-center items-center text-lg ${
-              cip8Status || cip30Status ? "text-green-50" : "text-red-50"
-            }`}
-          >
-            {cip8Status && (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                className="size-6 text-green-300"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                />
-              </svg>
-            )}
-            {!cip8Status && (
-              <div className="has-tooltip">
+          {(cip8Status || !cip30Status) && (
+            <p
+              className={`flex justify-center items-center text-lg ${
+                cip8Status ? "text-green-50" : "text-red-50"
+              }`}
+            >
+              {cip8Status && (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                   stroke="currentColor"
-                  className="size-6 text-red-500"
+                  className="size-6 text-green-300"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                   />
                 </svg>
-                <span class="tooltip bg-cf-dark px-2 py-1 text-base rounded-md shadow-lg">Error: {error.cip8}</span>
-              </div>
-            )}
-            <div className="ml-1">CIP-0008</div>
-          </p>
-          <p
-            className={`flex justify-center items-center text-lg ${
-              cip8Status || cip30Status ? "text-green-50" : "text-red-50"
-            }`}
-          >
-            {cip30Status && (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                className="size-6 text-green-300"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                />
-              </svg>
-            )}
-            {!cip30Status && (
-              <div className="has-tooltip">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  className="size-6 text-red-500"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                  />
-                </svg>
-                <span class="tooltip bg-cf-dark px-2 py-1 text-base rounded-md shadow-lg">Error: {error.cip30}</span>
-              </div>
-            )}
-            <div className="ml-1">CIP-0030</div>
-          </p>
-          {/* {!cip8Status && !cip30Status && (error.cip8 || error.cip30) && (
-            <p className="text-red-200 flex justify-center col-span-2 text-base px-4">
-              {error.cip8 && "CIP-0008: " + error.cip8}
-              {error.cip8 && <br />}
-              {error.cip30 && "CIP-0030: " + error.cip30}
+              )}
+              {!cip8Status && (
+                <div className="has-tooltip">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="size-6 text-red-500"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                    />
+                  </svg>
+                  <span className="tooltip bg-cf-dark px-2 py-1 text-base rounded-md shadow-lg">
+                    Error: {error.cip8}
+                  </span>
+                </div>
+              )}
+              <div className="ml-1">CIP-0008</div>
             </p>
-          )} */}
+          )}
+          {(cip30Status || !cip8Status) && (
+            <p
+              className={`flex justify-center items-center text-lg ${
+                cip30Status ? "text-green-50" : "text-red-50"
+              }`}
+            >
+              {cip30Status && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="size-6 text-green-300"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                  />
+                </svg>
+              )}
+              {!cip30Status && (
+                <div className="has-tooltip">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="size-6 text-red-500"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                    />
+                  </svg>
+                  <span className="tooltip bg-cf-dark px-2 py-1 text-base rounded-md shadow-lg">
+                    Error: {error.cip30}
+                  </span>
+                </div>
+              )}
+              <div className="ml-1">CIP-0030</div>
+            </p>
+          )}
         </div>
       )}
       <div className="flex flex-col w-full max-w-md">
@@ -197,6 +200,10 @@ const SignatureVerification = () => {
             </svg>
           </button>
         </div>
+        <h1 className="mt-4 text-center text-xs font-bold mb-6 text-cf-blue-900">
+          Securely verify data and signatures using CIP-0008 and CIP-0030
+          standards on the Cardano.
+        </h1>
       </div>
     </div>
   );
