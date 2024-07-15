@@ -44,11 +44,15 @@ const SignatureVerification = () => {
       </h1>
       {cip8Status !== null && cip30Status !== null && (
         <div
-        className={`mb-12 ${
-          cip8Status && cip30Status ? "grid grid-cols-1" : "flex justify-center"
-        } ${!cip8Status && !cip30Status ? "gap-28" : "gap-4"} px-3 py-2 max-w-md w-full rounded-md shadow-lg ${
-          cip8Status || cip30Status ? "bg-green-700" : "bg-red-800"
-        }`}
+          className={`mb-12 ${
+            cip8Status && cip30Status
+              ? "grid grid-cols-1"
+              : "flex justify-center"
+          } ${
+            !cip8Status && !cip30Status ? "gap-28" : "gap-4"
+          } px-3 py-2 max-w-md w-full rounded-md shadow-lg ${
+            cip8Status || cip30Status ? "bg-green-700" : "bg-red-800"
+          }`}
         >
           {(cip8Status || !cip30Status) && (
             <p
@@ -200,9 +204,16 @@ const SignatureVerification = () => {
             </svg>
           </button>
         </div>
-        <h1 className="mt-4 text-center text-xs font-bold mb-6 text-cf-blue-900">
-          Securely verify data and signatures using CIP-0008 and CIP-0030
-          standards on the Cardano.
+        <h1 className="mt-4 text-xs font-bold mb-6 text-cf-blue-900">
+          This tool verifies signed messages for Cardano public keys in the
+          browser. Signing messages on Cardano can be used to prove ownership of
+          an address, identity or other off-chain data without the need of an
+          on-chain transaction. Such messages are often also used for
+          authentication. 
+        </h1>
+        <h1 className="text-xs font-bold mb-6 text-cf-blue-900">
+          Currently, the tool supports messages signed with
+          standards CIP-0008 and CIP-0030.
         </h1>
       </div>
     </div>
