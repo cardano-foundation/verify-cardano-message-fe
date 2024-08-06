@@ -1,6 +1,8 @@
 import "./globals.css";
 import localFont from "next/font/local";
 import Header from "../components/Header";
+import { Matomo } from "../lib/matomo-integration/matomo";
+import { Swetrix } from "../lib/swetrix-integration/swetrix";
 
 const switzer = localFont({
   src: [
@@ -31,10 +33,26 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body
-        className={`${switzer.variable} font-sans antialiased`}
-      >
+      <body className={`${switzer.variable} font-sans antialiased`}>
+        {/* Matomo */}
+        <Matomo.script />
+        {/* Swetrix */}
+        <Swetrix.initialScript />
+        <Swetrix.script />
         <Header />
+        <div
+          dangerouslySetInnerHTML={{
+            __html: `
+          <noscript>
+            <img
+              src="https://api.swetrix.com/log/noscript?pid=GRxW5Lv9sQLD"
+              alt=""
+              referrerpolicy="no-referrer-when-downgrade"
+            />
+          </noscript>
+        `,
+          }}
+        />
         <main className="relative min-h-screen lg:overflow-hidden px-4 py-4 sm:py-0">
           <div
             className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
