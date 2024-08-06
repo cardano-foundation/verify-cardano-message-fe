@@ -2,7 +2,7 @@
 
 
 ## Cardano Message Verification Frontend
-We wanted to build a Cardano Message Verification Frontend Frontend as open and inclusive as Cardano. A repository that is in the hands of the Cardano community and can be constantly evolved by it.
+We wanted to build a Cardano Message Verification Frontend as open and inclusive as Cardano. A repository that is in the hands of the Cardano community and can be constantly evolved by it.
 
 For this to be successful, the repository relies on your contributions, and the fact that you are reading this text probably means that you have something to contribute.
 
