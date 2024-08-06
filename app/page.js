@@ -3,6 +3,12 @@
 import React, { useState } from "react";
 import Input from "../components/Input";
 import Textarea from "../components/Textarea";
+import PoweredBy from "../components/PoweredBy";
+import MessageVerification from "../components/VerificationExample";
+import cip0008Data from "../data/cip0008example.json";
+import cip0030Data from "../data/cip0030example.json";
+import TooltipIcon from "../components/TooltipIcon";
+import ResetIcon from "../components/ResetIcon";
 
 const SignatureVerification = () => {
   const [publicKey, setPublicKey] = useState("");
@@ -37,14 +43,31 @@ const SignatureVerification = () => {
     setError(null);
   };
 
+  // 0008 Example Data
+  const fillCIP0008Example = () => {
+    const { publicKey, message, signature } = cip0008Data[0];
+    setPublicKey(publicKey);
+    setMessage(message);
+    setSignature(signature);
+  };
+
+  // 0030 Example Data
+  const fillCIP0030Example = () => {
+    const { publicKey, message, signature } = cip0030Data[0];
+    setPublicKey(publicKey);
+    setMessage(message);
+    setSignature(signature);
+  };
+
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-cf-blue-900">
-        Cardano Signature Verification
-      </h1>
+      <MessageVerification
+        fillCIP0008Example={fillCIP0008Example}
+        fillCIP0030Example={fillCIP0030Example}
+      />
       {cip8Status !== null && cip30Status !== null && (
         <div
-          className={`mb-12 ${
+          className={`mb-4 ${
             cip8Status && cip30Status
               ? "grid grid-cols-1"
               : "flex justify-center"
@@ -149,33 +172,81 @@ const SignatureVerification = () => {
         </div>
       )}
       <div className="flex flex-col w-full max-w-md">
-        <Input
-          className="mb-8"
-          id="public-key"
-          label="Public Key"
-          name="Public Key"
-          type="text"
-          value={publicKey}
-          onChange={(e) => setPublicKey(e.target.value)}
-        />
-        <Input
-          className="mb-8"
-          id="message"
-          label="Message"
-          name="Message"
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <Textarea
-          className="mb-8"
-          id="signature"
-          label="Signature"
-          name="Signature"
-          type="text"
-          value={signature}
-          onChange={(e) => setSignature(e.target.value)}
-        />
+        <div className="mb-4">
+          <div className="relative flex items-center mb-1">
+            <label
+              htmlFor="public-key"
+              className="block text-sm font-medium text-gray-700 mr-1"
+            >
+              Public Key
+            </label>
+            <div className="has-tooltip relative">
+              <TooltipIcon />
+              <span className="tooltip absolute -top-10 left-0 bg-gray-700 text-white text-xs rounded py-1 px-2 min-w-[300px]">
+                The public key of an address can be found in explorers if the
+                address transacted in the past or in select wallets.
+              </span>
+            </div>
+          </div>
+          <Input
+            id="public-key"
+            name="Public Key"
+            type="text"
+            placeholder="Enter the public key of the address/key that was used to sign the message"
+            value={publicKey}
+            onChange={(e) => setPublicKey(e.target.value)}
+          />
+        </div>
+        <div className="mb-4">
+          <div className="relative flex items-center mb-1">
+            <label
+              htmlFor="message"
+              className="block text-sm font-medium text-gray-700 mr-1"
+            >
+              Message
+            </label>
+            <div className="has-tooltip relative">
+              <TooltipIcon />
+              <span className="tooltip absolute -top-10 left-0 bg-gray-700 text-white text-xs rounded py-1 px-2 min-w-[300px]">
+                The message that was signed by the private key.
+              </span>
+            </div>
+          </div>
+          <Input
+            id="message"
+            name="Message"
+            type="text"
+            placeholder="Enter the message"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+        </div>
+        <div className="mb-4">
+          <div className="relative flex items-center mb-1">
+            <label
+              htmlFor="signature"
+              className="block text-sm font-medium text-gray-700 mr-1"
+            >
+              Signature
+            </label>
+            <div className="has-tooltip relative">
+              <TooltipIcon />
+              <span className="tooltip absolute -top-6 left-0 bg-gray-700 text-white text-xs rounded py-1 px-2 min-w-[300px]">
+                For a valid signature, the message must be signed with a private
+                key, following CIP-0008 or CIP-0030. This can be done via CLI or
+                select wallets.
+              </span>
+            </div>
+          </div>
+          <Textarea
+            id="signature"
+            name="Signature"
+            type="text"
+            placeholder="Enter the signature"
+            value={signature}
+            onChange={(e) => setSignature(e.target.value)}
+          />
+        </div>
         <div className="flex items-center">
           <button
             disabled={!publicKey || !message || !signature || isLoading}
@@ -188,34 +259,11 @@ const SignatureVerification = () => {
             onClick={(e) => handleReset()}
             className="group bg-cf-blue-500 hover:bg-cf-blue-400 ml-2 rounded-md h-12 px-3 focus:outline-none focus:ring-2 focus:ring-cf-blue-200 transition ease-in-out duration-200"
           >
-            <svg
-              className="size-8 group-hover:animate-spin cursor-pointer stroke-current text-white transition-color ease-in-out duration-300"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
-              />
-            </svg>
+            <ResetIcon />
           </button>
         </div>
-        <h1 className="mt-4 text-xs font-bold mb-6 text-cf-blue-900">
-          This tool verifies signed messages for Cardano public keys in the
-          browser. Signing messages on Cardano can be used to prove ownership of
-          an address, identity or other off-chain data without the need of an
-          on-chain transaction. Such messages are often also used for
-          authentication. 
-        </h1>
-        <h1 className="text-xs font-bold mb-6 text-cf-blue-900">
-          Currently, the tool supports messages signed with
-          standards CIP-0008 and CIP-0030.
-        </h1>
       </div>
+      <PoweredBy />
     </div>
   );
 };
