@@ -27,7 +27,7 @@ const switzer = localFont({
 
 export const metadata = {
   title: "Cardano Message Verification",
-  description: ":)",
+  description: "Tool to verify signed messages for Cardano public keys in the browser",
 };
 
 export default function RootLayout({ children }) {
