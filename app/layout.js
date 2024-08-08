@@ -39,7 +39,7 @@ export default function RootLayout({ children }) {
         {/* Swetrix */}
         <Swetrix.initialScript />
         <Swetrix.script />
-        <Header />
+        <Header />  
         <div
           dangerouslySetInnerHTML={{
             __html: `
