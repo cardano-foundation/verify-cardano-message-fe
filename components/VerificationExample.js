@@ -9,8 +9,8 @@ const InformationSection = ({ fillCIP0008Example, fillCIP0030Example }) => {
         Cardano Message Verification
       </h1>
       <div className="flex justify-center">
-        <div className="max-w-2xl">
-          <h1 className="mt-4 text-sm font-normal mb-6 text-cf-blue-900">
+        <div className="max-w-xl relative"> {/* Added relative positioning */}
+          <h1 className="mt-4 text-sm font-normal mb-6 text-cf-blue-900 text-justify">
             This tool verifies signed messages for Cardano public keys in the
             browser.{" "}
             <span
@@ -18,10 +18,10 @@ const InformationSection = ({ fillCIP0008Example, fillCIP0030Example }) => {
               onClick={() => setShowMoreText(!showMoreText)}
               style={{ display: showMoreText ? "none" : "inline" }}
             >
-              Learn more...
+              Learn more
             </span>
             {showMoreText && (
-              <span className="text-sm font-normal">
+              <span className="text-sm font-normal block mt-2"> {/* Added block and margin-top */}
                 {" "}
                 Signing messages on Cardano can be used to prove ownership of an
                 address (e.g. as alternative to a
@@ -44,7 +44,7 @@ const InformationSection = ({ fillCIP0008Example, fillCIP0030Example }) => {
                   rel="noopener noreferrer"
                 >
                   {" "}
-                  [CIP-0008]{" "}
+                  CIP-0008{" "}
                 </a>
                 and
                 <a
@@ -54,7 +54,7 @@ const InformationSection = ({ fillCIP0008Example, fillCIP0030Example }) => {
                   rel="noopener noreferrer"
                 >
                   {" "}
-                  [CIP-0030]{" "}
+                  CIP-0030{" "}
                 </a>
                 , given the public key of a Cardano address and the signature of
                 the message. Try it Out:
