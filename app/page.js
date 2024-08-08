@@ -60,7 +60,7 @@ const SignatureVerification = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex flex-col items-center justify-center min-h-screen">
       <MessageVerification
         fillCIP0008Example={fillCIP0008Example}
         fillCIP0030Example={fillCIP0030Example}

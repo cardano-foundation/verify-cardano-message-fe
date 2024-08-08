@@ -22,9 +22,9 @@ const PoweredBy = () => {
         </div>
       </div>
       <p className="text-center mb-0 text-sm font-normal">
-        This tool is kindly provided by Cardano Foundation as is and under{" "}
+        Tool provided by the Cardano Foundation as is and under{" "}
         <Link href="/disclaimer" legacyBehavior>
-          <a className="text-blue-500 underline">these terms</a>
+          <a className="text-blue-500 underline">specific terms</a>
         </Link>
         .
       </p>

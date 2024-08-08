@@ -25,7 +25,7 @@ export default function Textarea({
         <textarea
           className={`${inputClass} w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cf-blue-500 focus:border-cf-blue-500 text-sm placeholder:text-xs`}
           disabled={disabled}
-          rows={5}
+          rows={7}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           value={value}
