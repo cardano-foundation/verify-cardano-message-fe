@@ -5,11 +5,8 @@ const InformationSection = ({ fillCIP0008Example, fillCIP0030Example }) => {
 
   return (
     <>
-      <h1 className="text-3xl font-bold text-cf-blue-900">
-        Cardano Message Verification
-      </h1>
       <div className="flex justify-center">
-        <div className="max-w-xl relative"> {/* Added relative positioning */}
+        <div className="max-w-xl relative sm:px-16">
           <h1 className="mt-4 text-sm font-normal mb-6 text-cf-blue-900 text-justify">
             This tool verifies signed messages for Cardano public keys in the
             browser.{" "}
@@ -21,7 +18,7 @@ const InformationSection = ({ fillCIP0008Example, fillCIP0030Example }) => {
               Learn more
             </span>
             {showMoreText && (
-              <span className="text-sm font-normal block mt-2"> {/* Added block and margin-top */}
+              <span className="text-sm font-normal block mt-2">
                 {" "}
                 Signing messages on Cardano can be used to prove ownership of an
                 address (e.g. as alternative to a
