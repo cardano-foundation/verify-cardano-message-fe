@@ -6,12 +6,12 @@ const PoweredBy = () => {
   return (
     <div className="flex flex-col items-center justify-center mt-8">
       <div className="flex items-center justify-center space-x-2 mb-4">
-        <p className="text-base font-bold mb-0 opacity-90">Powered By</p>
+        <p className="text-sm mb-0 opacity-90">Powered By</p>
         <div className="relative h-auto w-32">
           <Link href="https://cardanofoundation.org/" legacyBehavior>
             <a>
               <Image
-                src="/cardano-logo.png"
+                src="/cardano-logo.svg"
                 alt="Cardano Logo"
                 objectFit="contain"
                 height={56}
