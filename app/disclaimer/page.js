@@ -2,7 +2,7 @@ import React from "react";
 
 const DisclaimerPage = () => {
   return (
-    <div className="flex flex-col items-center justify-top h-screen p-4 mt-20">
+    <div className="flex flex-col items-center justify-top h-screen p-4 mt-36">
       <div className="p-6 rounded-lg max-w-2xl text-center">
         <h1 className="text-3xl font-bold text-cf-blue-900 text-left mb-4">
           Cardano Message Verification

@@ -61,6 +61,9 @@ const SignatureVerification = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
+      <h1 className="text-3xl font-bold text-cf-blue-900 sm:pr-8">
+        Cardano Message Verification
+      </h1>
       <MessageVerification
         fillCIP0008Example={fillCIP0008Example}
         fillCIP0030Example={fillCIP0030Example}
