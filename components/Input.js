@@ -9,6 +9,7 @@ export default function Input({
   placeholder,
   value,
   onChange,
+  appendPrefix = false,
   ...props
 }) {
   const [isFocused, setIsFocused] = useState(false);
@@ -23,7 +24,7 @@ export default function Input({
       </label>
       <div className="relative">
         <input
-          className={`${inputClass} w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cf-blue-500 focus:border-cf-blue-500 text-sm placeholder:text-xs`}
+          className={`${inputClass} ${appendPrefix && 'pl-[8.725rem]'} w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cf-blue-500 focus:border-cf-blue-500 text-sm placeholder:text-xs`}
           disabled={disabled}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
@@ -38,6 +39,9 @@ export default function Input({
         >
           {placeholder}
         </span>
+        {appendPrefix && <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 pointer-events-none">
+          a401010327200621
+        </span>}
       </div>
     </div>
   );
