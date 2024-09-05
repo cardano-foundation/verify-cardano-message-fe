@@ -16,6 +16,7 @@ const SignatureVerification = () => {
   const [signature, setSignature] = useState("");
   const [cip8Status, setCip8Status] = useState(null);
   const [cip30Status, setCip30Status] = useState(null);
+  const [isPrefixAppended, setIsPrefixAppended] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,6 +30,7 @@ const SignatureVerification = () => {
     const data = await response.json();
     setCip8Status(data.isCip8Verified);
     setCip30Status(data.isCip30Verified);
+    setIsPrefixAppended(data.isPrefixAppended);
     setError(data.error);
     setIsLoading(false);
   };
@@ -38,8 +40,14 @@ const SignatureVerification = () => {
     setPublicKey("");
     setMessage("");
     setSignature("");
+    resetStatus();
+  };
+
+  // Reset statuses when form gets dirty
+  const resetStatus = () => {
     setCip8Status(null);
     setCip30Status(null);
+    setIsPrefixAppended(false);
     setError(null);
   };
 
@@ -185,7 +193,7 @@ const SignatureVerification = () => {
             </label>
             <div className="has-tooltip relative">
               <TooltipIcon />
-              <span className="tooltip absolute -top-10 left-0 bg-gray-700 text-white text-xs rounded py-1 px-2 min-w-[300px]">
+              <span className="tooltip absolute top-[1.125rem] left-0 bg-gray-700 text-white text-xs rounded py-1 px-2 min-w-[300px]">
                 The public key of an address can be found in explorers if the
                 address transacted in the past or in select wallets.
               </span>
@@ -194,10 +202,16 @@ const SignatureVerification = () => {
           <Input
             id="public-key"
             name="Public Key"
+            appendPrefix={isPrefixAppended && (cip8Status || cip30Status)}
             type="text"
             placeholder="Enter the public key of the address/key that was used to sign the message"
             value={publicKey}
-            onChange={(e) => setPublicKey(e.target.value)}
+            onChange={(e) => {
+              setPublicKey(e.target.value)
+              if (cip8Status !== null || cip30Status !== null) {
+                resetStatus()
+              }
+            }}
           />
         </div>
         <div className="mb-4">
@@ -210,7 +224,7 @@ const SignatureVerification = () => {
             </label>
             <div className="has-tooltip relative">
               <TooltipIcon />
-              <span className="tooltip absolute -top-10 left-0 bg-gray-700 text-white text-xs rounded py-1 px-2 min-w-[300px]">
+              <span className="tooltip absolute top-[1.125rem] left-0 bg-gray-700 text-white text-xs rounded py-1 px-2 min-w-[300px]">
                 The message that was signed by the private key.
               </span>
             </div>
@@ -221,7 +235,12 @@ const SignatureVerification = () => {
             type="text"
             placeholder="Enter the message"
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={(e) => {
+              setMessage(e.target.value)
+              if (cip8Status !== null || cip30Status !== null) {
+                resetStatus()
+              }
+            }}
           />
         </div>
         <div className="mb-4">
@@ -234,7 +253,7 @@ const SignatureVerification = () => {
             </label>
             <div className="has-tooltip relative">
               <TooltipIcon />
-              <span className="tooltip absolute -top-6 left-0 bg-gray-700 text-white text-xs rounded py-1 px-2 min-w-[300px]">
+              <span className="tooltip absolute top-[1.125rem] left-0 bg-gray-700 text-white text-xs rounded py-1 px-2 min-w-[300px]">
                 For a valid signature, the message must be signed with a private
                 key, following CIP-0008 or CIP-0030. This can be done via CLI or
                 select wallets.
@@ -247,7 +266,12 @@ const SignatureVerification = () => {
             type="text"
             placeholder="Enter the signature"
             value={signature}
-            onChange={(e) => setSignature(e.target.value)}
+            onChange={(e) => {
+              setSignature(e.target.value)
+              if (cip8Status !== null || cip30Status !== null) {
+                resetStatus()
+              }
+            }}
           />
         </div>
         <div className="flex items-center">

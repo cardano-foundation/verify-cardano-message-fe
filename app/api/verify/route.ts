@@ -6,6 +6,10 @@ import {
 import verifyDataSignature from "@cardano-foundation/cardano-verify-datasignature";
 import { Buffer } from "buffer";
 
+function appendCborPrefix(publicKey: string) {
+  return `a401010327200621${publicKey}`;
+}
+
 export async function GET(request) {
   const url = new URL(request.url);
   const { searchParams } = url;
@@ -16,6 +20,7 @@ export async function GET(request) {
 
   let isCip8Verified = false;
   let isCip30Verified = false;
+  let isPrefixAppended = false;
 
   let error: { cip8: string; cip30: string } = { cip8: "", cip30: "" };
 
@@ -26,30 +31,44 @@ export async function GET(request) {
       Buffer.from(signature, "hex")
     );
     const messageBytes = Buffer.from(message);
-    console.log(`Bytes converted successfully`);
 
-    const isValid = publicKeyBytes.verify(messageBytes, signatureBytes);
-    console.log(`Verification result: ${isValid}`);
-    isCip8Verified = isValid;
+    // Try initial verification without prefix
+    isCip8Verified = publicKeyBytes.verify(messageBytes, signatureBytes);
   } catch (err) {
-    console.error(`Verification failed at CIP-8: ${err}`);
-    error.cip8 = err instanceof Error ? err.message : String(err);
+    // First verification failed, try with CBOR prefix
+    try {
+      const cborPublicKeyBytes = PublicKey.from_bytes(Buffer.from(appendCborPrefix(publicKey), "hex"));
+      const signatureBytes = Ed25519Signature.from_bytes(Buffer.from(signature, "hex"));
+      const messageBytes = Buffer.from(message);
+
+      isCip8Verified = cborPublicKeyBytes.verify(messageBytes, signatureBytes);
+      isPrefixAppended = true;
+    } catch (innerErr) {
+      console.error(`Verification failed at CIP-8: ${innerErr}`);
+      error.cip8 = innerErr instanceof Error ? innerErr.message : String(innerErr);
+    }
   }
 
   // Verify if it's CIP-30
   try {
-    const isValid = await verifyDataSignature(signature, publicKey, message);
-    console.log(`Verification result: ${isValid}`);
-    isCip30Verified = isValid;
+    // Try initial verification without prefix
+    isCip30Verified = await verifyDataSignature(signature, publicKey, message);
   } catch (err) {
-    console.error(`Verification failed at CIP-30: ${err}`);
-    error.cip30 = err instanceof Error ? err.message : String(err);
+    // First verification failed, try with CBOR prefix
+    try {
+      const cborPublicKey = appendCborPrefix(publicKey);
+      isCip30Verified = await verifyDataSignature(signature, cborPublicKey, message);
+      isPrefixAppended = true;
+    } catch (innerErr) {
+      console.error(`Verification failed at CIP-30: ${innerErr}`);
+      error.cip30 = innerErr instanceof Error ? innerErr.message : String(innerErr);
+    }
   }
 
-  // Return Result to the client
   return NextResponse.json({
     isCip8Verified,
     isCip30Verified,
+    isPrefixAppended,
     error,
   });
 }
