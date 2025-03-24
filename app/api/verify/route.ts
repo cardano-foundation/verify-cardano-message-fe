@@ -42,7 +42,7 @@ function extractSignatureFromCbor(cborSignature: string): string {
 async function extractSignatureWithCbor(cborHex: string): Promise<string> {
   try {
     const cborBuffer = Buffer.from(cborHex, "hex");
-    const decoded = await cbor.decode(cborBuffer, { stream: false });
+    const decoded = await cbor.decode(cborBuffer);
     console.log("Decoded CBOR structure:", JSON.stringify(decoded, null, 2));
 
     // Navigate through the CBOR structure
