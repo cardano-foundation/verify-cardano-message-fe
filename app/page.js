@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Input from "../components/Input";
 import Textarea from "../components/Textarea";
 import PoweredBy from "../components/PoweredBy";
@@ -17,22 +17,51 @@ const SignatureVerification = () => {
   const [cip8Status, setCip8Status] = useState(null);
   const [cip30Status, setCip30Status] = useState(null);
   const [isPrefixAppended, setIsPrefixAppended] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState({ cip8: "", cip30: "" });
   const [isLoading, setIsLoading] = useState(false);
 
   // Handle signature verification
   const handleVerifySignature = async () => {
     setIsLoading(true);
-    const response = await fetch(
-      `/api/verify?publicKey=${publicKey}&message=${message}&signature=${signature}`
-    );
+    resetStatus();
 
-    const data = await response.json();
-    setCip8Status(data.isCip8Verified);
-    setCip30Status(data.isCip30Verified);
-    setIsPrefixAppended(data.isPrefixAppended);
-    setError(data.error);
-    setIsLoading(false);
+    try {
+      // Encode parameters to handle special characters
+      const encodedPublicKey = encodeURIComponent(publicKey);
+      const encodedMessage = encodeURIComponent(message);
+      const encodedSignature = encodeURIComponent(signature);
+
+      const response = await fetch(
+        `/api/verify?publicKey=${encodedPublicKey}&message=${encodedMessage}&signature=${encodedSignature}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Verification response:", data);
+
+      setCip8Status(data.isCip8Verified);
+      setCip30Status(data.isCip30Verified);
+      setIsPrefixAppended(data.isPrefixAppended);
+
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setError({ cip8: "", cip30: "" });
+      }
+    } catch (err) {
+      console.error("Verification failed:", err);
+      setCip8Status(false);
+      setCip30Status(false);
+      setError({
+        cip8: `Request error: ${err.message}`,
+        cip30: `Request error: ${err.message}`,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Reset the form
@@ -48,7 +77,7 @@ const SignatureVerification = () => {
     setCip8Status(null);
     setCip30Status(null);
     setIsPrefixAppended(false);
-    setError(null);
+    setError({ cip8: "", cip30: "" });
   };
 
   // 0008 Example Data
@@ -57,6 +86,7 @@ const SignatureVerification = () => {
     setPublicKey(publicKey);
     setMessage(message);
     setSignature(signature);
+    resetStatus();
   };
 
   // 0030 Example Data
@@ -65,6 +95,7 @@ const SignatureVerification = () => {
     setPublicKey(publicKey);
     setMessage(message);
     setSignature(signature);
+    resetStatus();
   };
 
   return (
@@ -127,7 +158,8 @@ const SignatureVerification = () => {
                     />
                   </svg>
                   <span className="tooltip bg-cf-dark px-2 py-1 text-base rounded-md shadow-lg">
-                    Error: {error.cip8}
+                    Error:{" "}
+                    {error && error.cip8 ? error.cip8 : "Verification failed"}
                   </span>
                 </div>
               )}
@@ -173,7 +205,8 @@ const SignatureVerification = () => {
                     />
                   </svg>
                   <span className="tooltip bg-cf-dark px-2 py-1 text-base rounded-md shadow-lg">
-                    Error: {error.cip30}
+                    Error:{" "}
+                    {error && error.cip30 ? error.cip30 : "Verification failed"}
                   </span>
                 </div>
               )}
@@ -207,9 +240,9 @@ const SignatureVerification = () => {
             placeholder="Enter the public key of the address/key that was used to sign the message"
             value={publicKey}
             onChange={(e) => {
-              setPublicKey(e.target.value)
+              setPublicKey(e.target.value);
               if (cip8Status !== null || cip30Status !== null) {
-                resetStatus()
+                resetStatus();
               }
             }}
           />
@@ -236,9 +269,9 @@ const SignatureVerification = () => {
             placeholder="Enter the message"
             value={message}
             onChange={(e) => {
-              setMessage(e.target.value)
+              setMessage(e.target.value);
               if (cip8Status !== null || cip30Status !== null) {
-                resetStatus()
+                resetStatus();
               }
             }}
           />
@@ -267,9 +300,9 @@ const SignatureVerification = () => {
             placeholder="Enter the signature"
             value={signature}
             onChange={(e) => {
-              setSignature(e.target.value)
+              setSignature(e.target.value);
               if (cip8Status !== null || cip30Status !== null) {
-                resetStatus()
+                resetStatus();
               }
             }}
           />
