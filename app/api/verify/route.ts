@@ -120,45 +120,32 @@ export async function GET(request) {
 
   // Verify if it's CIP-8
   try {
+    const publicKeyBytes = PublicKey.from_bytes(Buffer.from(publicKey, "hex"));
+    const signatureBytes = Ed25519Signature.from_bytes(
+      Buffer.from(signature, "hex")
+    );
+    const messageBytes = Buffer.from(message);
+
+    // Try initial verification without prefix
+    isCip8Verified = publicKeyBytes.verify(messageBytes, signatureBytes);
+  } catch (err) {
+    // First verification failed, try with CBOR prefix
     try {
-      const publicKeyBytes = PublicKey.from_bytes(
-        Buffer.from(publicKey, "hex")
+      const cborPublicKeyBytes = PublicKey.from_bytes(
+        Buffer.from(appendCborPrefix(publicKey), "hex")
       );
       const signatureBytes = Ed25519Signature.from_bytes(
-        Buffer.from(rawSignature, "hex")
+        Buffer.from(signature, "hex")
       );
       const messageBytes = Buffer.from(message);
 
-      // Try initial verification without prefix
-      isCip8Verified = publicKeyBytes.verify(messageBytes, signatureBytes);
-    } catch (err) {
-      console.log("First CIP-8 verification failed:", err);
-      error.cip8 = err instanceof Error ? err.message : String(err);
-
-      // Try with CBOR prefix
-      try {
-        const cborPublicKeyBytes = PublicKey.from_bytes(
-          Buffer.from(appendCborPrefix(publicKey), "hex")
-        );
-        const signatureBytes = Ed25519Signature.from_bytes(
-          Buffer.from(rawSignature, "hex")
-        );
-        const messageBytes = Buffer.from(message);
-
-        isCip8Verified = cborPublicKeyBytes.verify(
-          messageBytes,
-          signatureBytes
-        );
-        isPrefixAppended = true;
-      } catch (innerErr) {
-        console.error(`CIP-8 verification with prefix failed: ${innerErr}`);
-        error.cip8 =
-          innerErr instanceof Error ? innerErr.message : String(innerErr);
-      }
+      isCip8Verified = cborPublicKeyBytes.verify(messageBytes, signatureBytes);
+      isPrefixAppended = true;
+    } catch (innerErr) {
+      console.error(`Verification failed at CIP-8: ${innerErr}`);
+      error.cip8 =
+        innerErr instanceof Error ? innerErr.message : String(innerErr);
     }
-  } catch (err) {
-    console.error(`CIP-8 overall error: ${err}`);
-    error.cip8 = err instanceof Error ? err.message : String(err);
   }
 
   // Verify if it's CIP-30
