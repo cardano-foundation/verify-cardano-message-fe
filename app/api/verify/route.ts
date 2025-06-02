@@ -8,6 +8,15 @@ import { Buffer } from "buffer";
 import * as cbor from "cbor";
 
 function appendCborPrefix(publicKey: string) {
+  // If the public key already has a CBOR prefix, return it as is
+  if (publicKey.startsWith("a4010103272006215820")) {
+    return publicKey;
+  }
+  // If it's a raw public key (32 bytes = 64 hex chars), add the prefix
+  if (publicKey.length === 64) {
+    return `a4010103272006215820${publicKey}`;
+  }
+  // For any other format, try to add the prefix
   return `a401010327200621${publicKey}`;
 }
 
@@ -120,11 +129,13 @@ export async function GET(request) {
 
   // Verify if it's CIP-8
   try {
-    const publicKeyBytes = PublicKey.from_bytes(Buffer.from(publicKey, "hex"));
-    const signatureBytes = Ed25519Signature.from_bytes(
-      Buffer.from(signature, "hex")
+    const publicKeyBytes = PublicKey.from_bytes(
+      new Uint8Array(Buffer.from(publicKey, "hex"))
     );
-    const messageBytes = Buffer.from(message);
+    const signatureBytes = Ed25519Signature.from_bytes(
+      new Uint8Array(Buffer.from(signature, "hex"))
+    );
+    const messageBytes = new Uint8Array(Buffer.from(message));
 
     // Try initial verification without prefix
     isCip8Verified = publicKeyBytes.verify(messageBytes, signatureBytes);
@@ -132,12 +143,12 @@ export async function GET(request) {
     // First verification failed, try with CBOR prefix
     try {
       const cborPublicKeyBytes = PublicKey.from_bytes(
-        Buffer.from(appendCborPrefix(publicKey), "hex")
+        new Uint8Array(Buffer.from(appendCborPrefix(publicKey), "hex"))
       );
       const signatureBytes = Ed25519Signature.from_bytes(
-        Buffer.from(signature, "hex")
+        new Uint8Array(Buffer.from(signature, "hex"))
       );
-      const messageBytes = Buffer.from(message);
+      const messageBytes = new Uint8Array(Buffer.from(message));
 
       isCip8Verified = cborPublicKeyBytes.verify(messageBytes, signatureBytes);
       isPrefixAppended = true;
@@ -150,6 +161,7 @@ export async function GET(request) {
 
   // Verify if it's CIP-30
   try {
+    // First try with the public key as is
     try {
       isCip30Verified = await verifyDataSignature(
         rawSignature,
@@ -174,7 +186,7 @@ export async function GET(request) {
         error.cip30 =
           innerErr instanceof Error ? innerErr.message : String(innerErr);
 
-        // If both attempts with extracted signature fail, try the original format
+        // Try with the original signature format
         try {
           isCip30Verified = await verifyDataSignature(
             signature,
@@ -203,6 +215,8 @@ export async function GET(request) {
             console.error(
               `All CIP-30 verification attempts failed: ${finalErr}`
             );
+            error.cip30 =
+              finalErr instanceof Error ? finalErr.message : String(finalErr);
           }
         }
       }
