@@ -7,12 +7,12 @@ const DisclaimerPage = () => {
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cf-blue-400 via-cf-blue-500 to-cf-blue-400"></div>
 
         <div className="p-8">
-          <h1 className="text-3xl font-bold text-cf-blue-900 mb-6 text-center font-mono tracking-tight">
+          <h1 className="text-3xl font-bold text-cf-blue-900 mb-6 text-center tracking-tight">
             Cardano Message Verification
           </h1>
 
           <div className="text-left">
-            <h2 className="text-xl font-semibold mb-4 text-cf-blue-800 font-mono">
+            <h2 className="text-xl font-semibold mb-4 text-cf-blue-800">
               Disclaimer
             </h2>
 
@@ -71,7 +71,7 @@ const DisclaimerPage = () => {
             <div className="flex justify-center mt-6">
               <a
                 href="/"
-                className="px-6 py-3 bg-cf-blue-500 text-white rounded-lg hover:bg-cf-blue-400 focus:outline-none focus:ring-2 focus:ring-cf-blue-300 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-[1.02] active:scale-[0.98] border border-cf-blue-600 font-mono tracking-wide font-medium"
+                className="inline-flex items-center justify-center rounded-md bg-cf-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-cf-blue-700 focus:outline-none focus:ring-2 focus:ring-cf-blue-500 focus:ring-offset-2 active:scale-[0.98] border border-cf-blue-600 tracking-wide"
               >
                 Back to Home
               </a>
