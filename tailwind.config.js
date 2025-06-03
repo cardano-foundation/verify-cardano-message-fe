@@ -19,7 +19,7 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-switzer)"],
+        sans: ["var(--font-chivo)"],
       },
       fontSize: {
         "cf-sm": "0.875rem", // 14px

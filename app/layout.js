@@ -1,27 +1,12 @@
 import "./globals.css";
-import localFont from "next/font/local";
+import { Chivo } from "next/font/google";
 import Header from "../components/Header";
 import { Matomo } from "../lib/matomo-integration/matomo";
 
-const switzer = localFont({
-  src: [
-    {
-      path: "../lib/assets/fonts/switzer/Switzer-Regular.woff2",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "../lib/assets/fonts/switzer/Switzer-Medium.woff2",
-      weight: "500",
-      style: "normal",
-    },
-    {
-      path: "../lib/assets/fonts/switzer/Switzer-Semibold.woff2",
-      weight: "600",
-      style: "normal",
-    },
-  ],
-  variable: "--font-switzer",
+const chivo = Chivo({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-chivo",
 });
 
 export const metadata = {
@@ -33,7 +18,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${switzer.variable} font-sans antialiased`}>
+      <body className={`${chivo.variable} font-sans antialiased`}>
+        <Header />
         {/* Matomo */}
         <Matomo.script />
         <main className="relative min-h-screen lg:overflow-hidden px-4 py-4 sm:py-0">
