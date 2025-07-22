@@ -1,0 +1,92 @@
+{
+    "metadata": {
+        "@context": {
+            "@language": "en",
+            "CIP100": "https://github.com/cardano-foundation/CIPs/blob/master/CIP-0100/README.md",
+            "CIP108": "https://github.com/cardano-foundation/CIPs/blob/master/CIP-0108/README.md",
+            "hashAlgorithm": "CIP100:hashAlgorithm",
+            "body": {
+                "@id": "CIP108:body",
+                "@context": {
+                    "references": {
+                        "@id": "CIP108:references",
+                        "@container": "@set",
+                        "@context": {
+                            "GovernanceMetadata": "CIP100:GovernanceMetadataReference",
+                            "Other": "CIP100:OtherReference",
+                            "label": "CIP100:reference-label",
+                            "uri": "CIP100:reference-uri",
+                            "referenceHash": {
+                                "@id": "CIP108:referenceHash",
+                                "@context": {
+                                    "hashDigest": "CIP108:hashDigest",
+                                    "hashAlgorithm": "CIP100:hashAlgorithm"
+                                }
+                            }
+                        }
+                    },
+                    "title": "CIP108:title",
+                    "abstract": "CIP108:abstract",
+                    "motivation": "CIP108:motivation",
+                    "rationale": "CIP108:rationale"
+                }
+            },
+            "authors": {
+                "@id": "CIP100:authors",
+                "@container": "@set",
+                "@context": {
+                    "name": "http://xmlns.com/foaf/0.1/name",
+                    "witness": {
+                        "@id": "CIP100:witness",
+                        "@context": {
+                            "witnessAlgorithm": "CIP100:witnessAlgorithm",
+                            "publicKey": "CIP100:publicKey",
+                            "signature": "CIP100:signature"
+                        }
+                    }
+                }
+            }
+        },
+        "authors": [
+            {
+                "name": "abailly <arnaud@pankzsoft.com>",
+                "witness": {
+                    "witnessAlgorithm": "ed25519",
+                    "publicKey": "d5e27eee7d4970317fd1b36e54aefac95c31154e1b20637f7e2ca1eb52dd0746",
+                    "signature": "8a1d2c5e16fb9c91c502a2381eab2d5b51f159b386a1924024652ab8a46dba4efb55363f51f87f6a0b0a4dce2195ff0cb224733256dcde1b221ea304297e480b"
+                }
+            },
+            {
+                "name": "Dam-CZ <damien.czapla@openthelead.com>",
+                "witness": {
+                    "witnessAlgorithm": "ed25519",
+                    "publicKey": "f127c0824564745561896c3ce3e6e5961f2acaab5f5f149c65f2e81ff549360a",
+                    "signature": "0c89d2e7d8ef7496578ad963bb8c7fef9293dd521f96431a36fdbf3c1715a988ef23b7710eaa2737644332ff684411a3b5a8d6f5672832415700887de189f30a"
+                }
+            },
+            {
+                "name": "Pi Lanningham <pi@sundae.fi>",
+                "witness": {
+                    "witnessAlgorithm": "ed25519",
+                    "publicKey": "c6089a76a380b282b078189f011dc53b05df1ea4804558444128d4849ad88e5b",
+                    "signature": "b05910f9992f9a94faa2b89a306e2f29207f5999bbf7d9b0fd0399e845050679b4fa9972d6e603a816d96c63d05d8843e454454580483a8812124cef92ca9d0a"
+                }
+            },
+            {
+                "name": "KtorZ <matthias.benkort@cardanofoundation.org>",
+                "witness": {
+                    "witnessAlgorithm": "ed25519",
+                    "publicKey": "ce0e80c60a0e16a9254d613dfadbcbdca2ac60ec105dc2f136636807d75dab01",
+                    "signature": "54e6156d297d4cbb4fc3c103b1b8f29dd3c43153ac7b0c57a33002a1f18746ad72a9346e6eba440e70f2528c9dab1962c94e5e62562261fe2379d47346594c05"
+                }
+            }
+        ],
+        "hashAlgorithm": "blake2b-256",
+        "body": {
+            "title": "Amaru Treasury Withdrawal 2025",
+            "abstract": "[Amaru](https://github.com/pragma-org/amaru) is an open-source project implementing a new fully interoperable block-producing node for Cardano. It aims to improve the network's overall accessibility and robustness without compromising its safety and security.\n\nThis treasury withdrawal of ₳1.5M follows a previously submitted and now approved [budget proposal](https://explorer.cardano.org/tx/bd488931f792651fefa9c6fda185a2c6cec83245b51d994e33090ce36e29cc26). It is split across five script addresses each covering a scope of a work (ledger, consensus, mercenaries and marketing) and a contingency reserve.",
+            "motivation": "## Who we are\n\n[Amaru](https://github.com/pragma-org/amaru) is a multi-entity effort that currently sits under [PRAGMA](https://pragma.io): a member-based, not-for-profit association for open-source blockchain software projects. Five members with equal power currently drive PRAGMA's strategy and operations: Blink Labs, Cardano Foundation, dcSpark, Sundae Labs, and TxPipe. Each of them has a proven track record of building on Cardano and supporting our ecosystem.",
+            "rationale": "## Administration of the budget\n\nThe [Amaru](https://github.com/pragma-org/amaru) maintainer committee ensures **direct administration** of its budget, assisted by an **on-chain smart contract**."
+        }
+    }
+}
