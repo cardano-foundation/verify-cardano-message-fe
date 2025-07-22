@@ -9,6 +9,7 @@ import cip0008Data from "../data/cip0008example.json";
 import cip0030Data from "../data/cip0030example.json";
 import TooltipIcon from "../components/TooltipIcon";
 import ResetIcon from "../components/ResetIcon";
+import { Navigation } from "../components/Navigation";
 
 const SignatureVerification = () => {
   const [publicKey, setPublicKey] = useState("");
@@ -48,31 +49,18 @@ const SignatureVerification = () => {
 
       if (data.error) {
         setError(data.error);
-      } else {
-        setError({ cip8: "", cip30: "" });
       }
     } catch (err) {
-      console.error("Verification failed:", err);
-      setCip8Status(false);
-      setCip30Status(false);
+      console.error("Verification error:", err);
       setError({
-        cip8: `Request error: ${err.message}`,
-        cip30: `Request error: ${err.message}`,
+        cip8: `Error: ${err.message}`,
+        cip30: `Error: ${err.message}`,
       });
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Reset the form
-  const handleReset = () => {
-    setPublicKey("");
-    setMessage("");
-    setSignature("");
-    resetStatus();
-  };
-
-  // Reset statuses when form gets dirty
   const resetStatus = () => {
     setCip8Status(null);
     setCip30Status(null);
@@ -80,62 +68,53 @@ const SignatureVerification = () => {
     setError({ cip8: "", cip30: "" });
   };
 
-  // 0008 Example Data
-  const fillCIP0008Example = () => {
-    const { publicKey, message, signature } = cip0008Data[0];
-    setPublicKey(publicKey);
-    setMessage(message);
-    setSignature(signature);
+  const handleReset = () => {
+    setPublicKey("");
+    setMessage("");
+    setSignature("");
     resetStatus();
   };
 
-  // 0030 Example Data
+  // Load CIP-0008 example data
+  const fillCIP0008Example = () => {
+    setPublicKey(cip0008Data[0].publicKey);
+    setMessage(cip0008Data[0].message);
+    setSignature(cip0008Data[0].signature);
+    resetStatus();
+  };
+
+  // Load CIP-0030 example data
   const fillCIP0030Example = () => {
-    const { publicKey, message, signature } = cip0030Data[0];
-    setPublicKey(publicKey);
-    setMessage(message);
-    setSignature(signature);
+    setPublicKey(cip0030Data[0].publicKey);
+    setMessage(cip0030Data[0].message);
+    setSignature(cip0030Data[0].signature);
     resetStatus();
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-8">
-      {/* Navigation */}
-      <div className="container mx-auto max-w-6xl mb-8">
-        <nav className="bg-white rounded-lg shadow-md p-4">
-          <div className="flex flex-wrap justify-center gap-4">
-            <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg font-medium">
-              CIP-8/30 Message Verification
-            </div>
-            <a
-              href="/cip100"
-              className="text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg font-medium transition-colors"
-            >
-              CIP-100 Governance Verification
-            </a>
-          </div>
-        </nav>
-      </div>
-
+    <div className="min-h-screen bg-transparent ">
+      <Navigation />
       <div className="flex flex-col items-center justify-center">
-        <div className="relative w-full max-w-2xl backdrop-blur-sm bg-white/80 border border-cf-blue-200 rounded-xl shadow-xl overflow-hidden">
+        <div className="mt-8 relative w-full max-w-2xl backdrop-blur-sm bg-white/80 border border-cf-blue-200 rounded-xl shadow-xl overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cf-blue-400 via-cf-blue-500 to-cf-blue-400"></div>
 
-          <div className="p-8">
-            <h1 className="text-3xl font-bold text-cf-blue-900 mb-6 text-center tracking-tight">
+          <div className="p-6">
+            <h1 className="text-2xl font-bold text-cf-blue-900 mb-4 text-center tracking-tight">
               Cardano Message Verification
             </h1>
-            <div className="flex justify-center mb-6">
+
+            <div className="flex justify-center mb-4">
               <MessageVerification
                 fillCIP0008Example={fillCIP0008Example}
                 fillCIP0030Example={fillCIP0030Example}
               />
             </div>
-            <div className="mb-6">
+
+            <div className="mb-4">
               {cip8Status === null || cip30Status === null ? (
-                <div className="border border-cf-blue-200 bg-cf-blue-50/80 px-5 py-3 rounded-lg shadow-sm text-center">
+                <div className="border border-cf-blue-200 bg-cf-blue-50/80 px-4 py-2 rounded-lg shadow-sm text-center">
                   <div className="flex items-center justify-center">
-                    <span className="text-cf-blue-700">
+                    <span className="text-cf-blue-700 text-sm">
                       Fill in all fields and verify signature
                     </span>
                   </div>
@@ -150,117 +129,36 @@ const SignatureVerification = () => {
                     cip8Status || cip30Status
                       ? "bg-green-700/90"
                       : "bg-red-800/90"
-                  } px-5 py-3 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform`}
+                  } px-4 py-2 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform`}
                 >
-                  <div className="flex justify-center gap-12 items-center">
-                    {(cip8Status || !cip30Status) && (
-                      <div
-                        className={`flex justify-center items-center text-lg font-semibold ${
-                          cip8Status ? "text-green-50" : "text-red-50"
-                        } transition-all duration-300`}
-                      >
-                        {cip8Status && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="1.5"
-                            stroke="currentColor"
-                            className="size-6 text-green-300 mr-2"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                            />
-                          </svg>
-                        )}
-                        {!cip8Status && (
-                          <div className="has-tooltip mr-2">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth="1.5"
-                              stroke="currentColor"
-                              className="size-6 text-red-400"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                              />
-                            </svg>
-                            <span className="tooltip absolute top-[1.125rem] left-0 bg-gray-800 text-white text-xs rounded py-2 px-3 min-w-[300px] border border-gray-700 shadow-2xl backdrop-blur-sm">
-                              Error:{" "}
-                              {error && error.cip8
-                                ? error.cip8
-                                : "Verification failed"}
-                            </span>
-                          </div>
-                        )}
-                        <div className="font-medium">CIP-0008</div>
-                      </div>
-                    )}
-
-                    {(cip30Status || !cip8Status) && (
-                      <div
-                        className={`flex justify-center items-center text-lg font-semibold ${
-                          cip30Status ? "text-green-50" : "text-red-50"
-                        } transition-all duration-300`}
-                      >
-                        {cip30Status && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="1.5"
-                            stroke="currentColor"
-                            className="size-6 text-green-300 mr-2"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                            />
-                          </svg>
-                        )}
-                        {!cip30Status && (
-                          <div className="has-tooltip mr-2">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth="1.5"
-                              stroke="currentColor"
-                              className="size-6 text-red-400"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                              />
-                            </svg>
-                            <span className="tooltip absolute top-[1.125rem] left-0 bg-gray-800 text-white text-xs rounded py-2 px-3 min-w-[300px] border border-gray-700 shadow-2xl backdrop-blur-sm">
-                              Error:{" "}
-                              {error && error.cip30
-                                ? error.cip30
-                                : "Verification failed"}
-                            </span>
-                          </div>
-                        )}
-                        <div className="font-medium">CIP-0030</div>
-                      </div>
-                    )}
+                  <div className="flex justify-center items-center">
+                    <span className="flex items-center text-sm font-semibold text-white">
+                      <span
+                        className={`inline-block w-2 h-2 rounded-full mr-2 ${
+                          cip8Status || cip30Status
+                            ? "bg-green-300"
+                            : "bg-red-300"
+                        }`}
+                      ></span>
+                      Result: {cip8Status || cip30Status ? "VALID" : "INVALID"}
+                      {cip8Status && " (CIP-0008)"}
+                      {cip30Status && !cip8Status && " (CIP-0030)"}
+                    </span>
                   </div>
+                  {isPrefixAppended && (
+                    <div className="text-center text-white/90 text-xs mt-1">
+                      Prefix automatically applied
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-            <div className="space-y-5">
+
+            <div className="space-y-4">
               <div className="relative">
-                <div className="flex items-center mb-2">
+                <div className="flex items-center mb-1">
                   <label
-                    htmlFor="public-key"
+                    htmlFor="publicKey"
                     className="block text-sm font-medium text-cf-blue-800 mr-2"
                   >
                     Public Key
@@ -268,17 +166,16 @@ const SignatureVerification = () => {
                   <div className="has-tooltip relative">
                     <TooltipIcon />
                     <span className="tooltip absolute top-[1.125rem] left-0 bg-gray-800 text-white text-xs rounded py-2 px-3 min-w-[300px] border border-gray-700 shadow-2xl backdrop-blur-sm">
-                      The public key of an address can be found in explorers if
-                      the address transacted in the past or in select wallets.
+                      The public key generated for your wallet. You can obtain
+                      this from your wallet settings in wallets like Eternl.
                     </span>
                   </div>
                 </div>
                 <Input
-                  id="public-key"
-                  name="Public Key"
-                  appendPrefix={isPrefixAppended && (cip8Status || cip30Status)}
+                  id="publicKey"
+                  name="publicKey"
                   type="text"
-                  placeholder="Enter the public key of the address/key that was used to sign the message"
+                  placeholder="Enter public key (hex)"
                   value={publicKey}
                   onChange={(e) => {
                     setPublicKey(e.target.value);
@@ -286,17 +183,12 @@ const SignatureVerification = () => {
                       resetStatus();
                     }
                   }}
-                  className="bg-gray-50 border-cf-blue-300 focus:border-cf-blue-500 focus:ring-cf-blue-400 text-sm"
+                  className="bg-gray-50 border-cf-blue-300 focus:border-cf-blue-500 focus:ring-cf-blue-400 text-sm h-10"
                 />
-                {isPrefixAppended && (cip8Status || cip30Status) && (
-                  <div className="text-xs text-cf-blue-600 mt-1">
-                    CBOR prefix added during verification
-                  </div>
-                )}
               </div>
 
               <div className="relative">
-                <div className="flex items-center mb-2">
+                <div className="flex items-center mb-1">
                   <label
                     htmlFor="message"
                     className="block text-sm font-medium text-cf-blue-800 mr-2"
@@ -322,12 +214,12 @@ const SignatureVerification = () => {
                       resetStatus();
                     }
                   }}
-                  className="bg-gray-50 border-cf-blue-300 focus:border-cf-blue-500 focus:ring-cf-blue-400 text-sm"
+                  className="bg-gray-50 border-cf-blue-300 focus:border-cf-blue-500 focus:ring-cf-blue-400 text-sm h-10"
                 />
               </div>
 
               <div className="relative">
-                <div className="flex items-center mb-2">
+                <div className="flex items-center mb-1">
                   <label
                     htmlFor="signature"
                     className="block text-sm font-medium text-cf-blue-800 mr-2"
@@ -355,20 +247,21 @@ const SignatureVerification = () => {
                       resetStatus();
                     }
                   }}
-                  className="bg-gray-50 border-cf-blue-300 focus:border-cf-blue-500 focus:ring-cf-blue-400 text-sm"
+                  className="bg-gray-50 border-cf-blue-300 focus:border-cf-blue-500 focus:ring-cf-blue-400 text-sm resize-none"
+                  rows={6}
                 />
               </div>
 
-              <div className="flex items-center pt-2">
+              <div className="flex items-center pt-1">
                 <button
                   disabled={!publicKey || !message || !signature || isLoading}
                   onClick={handleVerifySignature}
-                  className={`font-semibold flex-1 text-white h-12 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-cf-blue-300 focus:ring-offset-2 bg-cf-blue-500 hover:bg-cf-blue-400 disabled:bg-cf-blue-500/40 disabled:cursor-not-allowed transition-all duration-300 ease-in-out transform hover:scale-[1.02] active:scale-[0.98] border border-cf-blue-600`}
+                  className={`font-semibold flex-1 text-white h-10 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-cf-blue-300 focus:ring-offset-2 bg-cf-blue-500 hover:bg-cf-blue-400 disabled:bg-cf-blue-500/40 disabled:cursor-not-allowed transition-all duration-300 ease-in-out transform hover:scale-[1.02] active:scale-[0.98] border border-cf-blue-600 text-sm`}
                 >
                   {isLoading ? (
                     <span className="flex items-center justify-center">
                       <svg
-                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -395,7 +288,7 @@ const SignatureVerification = () => {
                 </button>
                 <button
                   onClick={(e) => handleReset()}
-                  className="group bg-cf-blue-500 hover:bg-cf-blue-400 ml-3 rounded-lg h-12 px-4 focus:outline-none focus:ring-2 focus:ring-cf-blue-300 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-[1.02] active:scale-[0.98] border border-cf-blue-600"
+                  className="group bg-cf-blue-500 hover:bg-cf-blue-400 ml-3 rounded-lg h-10 px-3 focus:outline-none focus:ring-2 focus:ring-cf-blue-300 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-[1.02] active:scale-[0.98] border border-cf-blue-600"
                   aria-label="Reset form"
                 >
                   <ResetIcon />
@@ -403,11 +296,11 @@ const SignatureVerification = () => {
               </div>
             </div>
           </div>
-
-          <div className="py-3 px-8 border-t border-cf-blue-100 bg-gray-50/80">
-            <PoweredBy />
-          </div>
         </div>
+      </div>
+
+      <div className="max-w-2xl mx-auto mt-6">
+        <PoweredBy />
       </div>
     </div>
   );
