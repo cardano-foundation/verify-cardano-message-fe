@@ -3,6 +3,7 @@
 import { useState } from "react";
 import PoweredBy from "../../components/PoweredBy";
 import { Navigation } from "../../components/Navigation";
+import ResetIcon from "../../components/ResetIcon";
 
 export default function CIP100Verification() {
   const [jsonInput, setJsonInput] = useState("");
@@ -271,113 +272,65 @@ export default function CIP100Verification() {
 
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-6">
-                      <div className="flex justify-between items-center mb-4">
-                        <div className="flex items-center">
+                      <div className="space-y-4">
+                        <div className="space-y-3">
                           <span className="text-lg font-semibold text-gray-700">
                             JSON-LD Governance Metadata
                           </span>
-                          <div className="relative ml-2 group">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="w-4 h-4 fill-current text-gray-700 cursor-pointer"
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
+                          <div className="flex space-x-2">
+                            <button
+                              type="button"
+                              onClick={loadExample}
+                              className="text-sm px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
                             >
-                              <circle
-                                cx="12"
-                                cy="12"
-                                r="11"
-                                stroke="currentColor"
-                                strokeWidth="1"
-                                fill="transparent"
-                              />
-                              <text
-                                x="12"
-                                y="16"
-                                textAnchor="middle"
-                                fontSize="12"
-                                fill="currentColor"
-                              >
-                                i
-                              </text>
-                            </svg>
-                            <span className="tooltip absolute top-[1.125rem] left-0 bg-gray-800 text-white text-xs rounded py-2 px-3 min-w-[300px] border border-gray-700 shadow-2xl backdrop-blur-sm">
-                              Paste your CIP-100 governance metadata JSON.
-                              Expected format: JSON-LD document with @context,
-                              authors array, hashAlgorithm, and body fields.
-                              Supports ed25519, CIP-0008, CIP-0030 witness
-                              algorithms.
-                            </span>
+                              Load Example
+                            </button>
+                            <button
+                              type="button"
+                              onClick={formatJsonInput}
+                              className="text-sm px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                            >
+                              Format JSON
+                            </button>
                           </div>
-                        </div>
-                        <div className="space-x-2">
+                        </div>{" "}
+                        <textarea
+                          id="jsonInput"
+                          value={jsonInput}
+                          onChange={(e) => setJsonInput(e.target.value)}
+                          placeholder="Paste your CIP-100 governance metadata JSON here..."
+                          rows={12}
+                          className="bg-gray-50 border-cf-blue-300 focus:border-cf-blue-500 focus:ring-cf-blue-400 text-sm w-full p-4 border rounded-lg font-mono resize-y focus:ring-2 transition-colors"
+                          required
+                        />
+                        {error && (
+                          <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
+                            <div className="text-red-700">{error}</div>
+                          </div>
+                        )}
+                        <div className="flex gap-4 pt-2">
                           <button
-                            type="button"
-                            onClick={loadExample}
-                            className="text-sm px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
+                            type="submit"
+                            disabled={isLoading || !jsonInput.trim()}
+                            className="font-semibold flex-1 text-white h-12 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-cf-blue-300 focus:ring-offset-2 bg-cf-blue-500 hover:bg-cf-blue-400 disabled:bg-cf-blue-500/40 disabled:cursor-not-allowed transition-all duration-300 ease-in-out transform hover:scale-[1.02] active:scale-[0.98] border border-cf-blue-600"
                           >
-                            Load Example
+                            {isLoading
+                              ? "Verifying..."
+                              : "Verify Governance Metadata"}
                           </button>
                           <button
                             type="button"
-                            onClick={formatJsonInput}
-                            className="text-sm px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                            onClick={() => {
+                              setJsonInput("");
+                              setResult(null);
+                              setError("");
+                            }}
+                            className="group bg-cf-blue-500 hover:bg-cf-blue-400 ml-3 rounded-lg h-12 px-3 focus:outline-none focus:ring-2 focus:ring-cf-blue-300 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-[1.02] active:scale-[0.98] border border-cf-blue-600"
+                            aria-label="Reset form"
                           >
-                            Format JSON
+                            <ResetIcon />
                           </button>
                         </div>
-                      </div>
-
-                      <textarea
-                        id="jsonInput"
-                        value={jsonInput}
-                        onChange={(e) => setJsonInput(e.target.value)}
-                        placeholder="Paste your CIP-100 governance metadata JSON here..."
-                        rows={12}
-                        className="bg-gray-50 border-cf-blue-300 focus:border-cf-blue-500 focus:ring-cf-blue-400 text-sm w-full p-4 border rounded-lg font-mono resize-y focus:ring-2 transition-colors"
-                        required
-                      />
-
-                      {error && (
-                        <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
-                          <div className="text-red-700">{error}</div>
-                        </div>
-                      )}
-
-                      <div className="flex gap-4 pt-2">
-                        <button
-                          type="submit"
-                          disabled={isLoading || !jsonInput.trim()}
-                          className="font-semibold flex-1 text-white h-12 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-cf-blue-300 focus:ring-offset-2 bg-cf-blue-500 hover:bg-cf-blue-400 disabled:bg-cf-blue-500/40 disabled:cursor-not-allowed transition-all duration-300 ease-in-out transform hover:scale-[1.02] active:scale-[0.98] border border-cf-blue-600"
-                        >
-                          {isLoading
-                            ? "Verifying..."
-                            : "Verify Governance Metadata"}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setJsonInput("");
-                            setResult(null);
-                            setError("");
-                          }}
-                          className="h-12 px-6 text-cf-blue-700 hover:text-cf-blue-600 focus:outline-none focus:ring-2 focus:ring-cf-blue-300 focus:ring-offset-2 rounded-lg transition-colors duration-300"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="1.5"
-                            stroke="currentColor"
-                            className="size-6"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
-                            />
-                          </svg>
-                        </button>
                       </div>
                     </div>
                   </form>
