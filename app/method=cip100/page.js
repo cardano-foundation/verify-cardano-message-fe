@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PoweredBy from "../../components/PoweredBy";
 import { Navigation } from "../../components/Navigation";
 import ResetIcon from "../../components/ResetIcon";
@@ -10,6 +10,40 @@ export default function CIP100Verification() {
   const [result, setResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Parse URL parameters on component mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      // Since we're on /method=cip100 route, always try to parse JSON
+      // Check for hash containing JSON
+      if (window.location.hash) {
+        try {
+          // Extract JSON from hash (remove the # symbol)
+          const hashContent = window.location.hash.substring(1);
+          const decodedJson = decodeURIComponent(hashContent);
+          const parsedJson = JSON.parse(decodedJson);
+          setJsonInput(JSON.stringify(parsedJson, null, 2));
+        } catch (err) {
+          console.error("Failed to parse JSON from URL:", err);
+          setError("Failed to parse JSON from URL parameters");
+        }
+      }
+
+      // Also check for direct rawjson parameter
+      const rawJson = urlParams.get("rawjson");
+      if (rawJson) {
+        try {
+          const decodedJson = decodeURIComponent(rawJson);
+          const parsedJson = JSON.parse(decodedJson);
+          setJsonInput(JSON.stringify(parsedJson, null, 2));
+        } catch (err) {
+          console.error("Failed to parse rawjson parameter:", err);
+          setError("Failed to parse JSON from rawjson parameter");
+        }
+      }
+    }
+  }, []);
 
   // Example JSON-LD governance metadata for placeholder
   const exampleJson = {
@@ -285,6 +319,7 @@ export default function CIP100Verification() {
                             >
                               Load Example
                             </button>
+
                             <button
                               type="button"
                               onClick={formatJsonInput}

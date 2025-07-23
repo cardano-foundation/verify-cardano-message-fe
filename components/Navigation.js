@@ -38,9 +38,9 @@ export const Navigation = () => {
                 CIP-8/30 Message Verification
               </Link>
               <Link
-                href="/cip100"
+                href="/method=cip100"
                 className={`font-medium transition-colors hover:text-cf-blue-600 ${
-                  pathname === "/cip100"
+                  pathname === "/method=cip100"
                     ? "border-b-2 border-cf-blue-600 pb-1 text-cf-blue-600"
                     : "text-gray-700"
                 }`}
@@ -128,9 +128,9 @@ export const Navigation = () => {
                 CIP-8/30 Message Verification
               </Link>
               <Link
-                href="/cip100"
+                href="/method=cip100"
                 className={`hover:bg-cf-blue-50 block rounded-md px-3 py-2 text-base font-medium hover:text-cf-blue-600 ${
-                  pathname === "/cip100"
+                  pathname === "/method=cip100"
                     ? "bg-cf-blue-50 border-l-4 border-cf-blue-600 text-cf-blue-600"
                     : "text-gray-700"
                 }`}
