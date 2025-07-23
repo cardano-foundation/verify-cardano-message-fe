@@ -1,6 +1,5 @@
 import "./globals.css";
 import { Chivo } from "next/font/google";
-import Header from "../components/Header";
 import { Matomo } from "../lib/matomo-integration/matomo";
 
 const chivo = Chivo({
@@ -19,10 +18,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${chivo.variable} font-sans antialiased`}>
-        <Header />
         {/* Matomo */}
         <Matomo.script />
-        <main className="relative min-h-screen lg:overflow-hidden px-4 py-4 sm:py-0">
+        <main className="relative min-h-screen lg:overflow-hidden py-4 sm:py-0">
           <div className="z-[-1] sm:-left-80 sm:-top-80 aspect-[1155/600] w-[5rem] h-[5rem] sm:w-[36.125rem] sm:h-[36.125rem] bg-gradient-to-tr from-[#00E0FF] to-[#0084FF] opacity-100 rounded-full absolute blur-[5rem]" />
           {children}
 

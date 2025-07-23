@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Input from "../components/Input";
-import Textarea from "../components/Textarea";
-import PoweredBy from "../components/PoweredBy";
-import MessageVerification from "../components/VerificationExample";
-import cip0008Data from "../data/cip0008example.json";
-import cip0030Data from "../data/cip0030example.json";
-import TooltipIcon from "../components/TooltipIcon";
-import ResetIcon from "../components/ResetIcon";
-import { Navigation } from "../components/Navigation";
+import Input from "../../components/Input";
+import Textarea from "../../components/Textarea";
+import PoweredBy from "../../components/PoweredBy";
+import MessageVerification from "../../components/VerificationExample";
+import cip0008Data from "../../data/cip0008example.json";
+import cip0030Data from "../../data/cip0030example.json";
+import TooltipIcon from "../../components/TooltipIcon";
+import ResetIcon from "../../components/ResetIcon";
+import { Navigation } from "../../components/Navigation";
 
 const SignatureVerification = () => {
   const [publicKey, setPublicKey] = useState("");
