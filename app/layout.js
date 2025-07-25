@@ -17,10 +17,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${chivo.variable} font-sans antialiased`}>
+      <body
+        className={`${chivo.variable} font-sans antialiased flex flex-col min-h-screen`}
+      >
         {/* Matomo */}
         <Matomo.script />
-        <main className="relative min-h-screen lg:overflow-hidden py-4 sm:py-0">
+        <main className="relative flex-1 lg:overflow-hidden py-4 sm:py-0">
           <div className="z-[-1] sm:-left-80 sm:-top-80 aspect-[1155/600] w-[5rem] h-[5rem] sm:w-[36.125rem] sm:h-[36.125rem] bg-gradient-to-tr from-[#00E0FF] to-[#0084FF] opacity-100 rounded-full absolute blur-[5rem]" />
           {children}
 
