@@ -23,10 +23,7 @@ export default function RootLayout({ children }) {
         {/* Matomo */}
         <Matomo.script />
         <main className="relative flex-1 lg:overflow-hidden py-4 sm:py-0">
-          <div className="z-[-1] sm:-left-80 sm:-top-80 aspect-[1155/600] w-[5rem] h-[5rem] sm:w-[36.125rem] sm:h-[36.125rem] bg-gradient-to-tr from-[#00E0FF] to-[#0084FF] opacity-100 rounded-full absolute blur-[5rem]" />
           {children}
-
-          <div className="z-[-1] sm:-right-80 sm:-bottom-80 aspect-[1300/678]  w-[5rem] h-[5rem] sm:w-[36.125rem] sm:h-[36.125rem] bg-gradient-to-tr from-[#00FF7F] to-[#00BE7A] opacity-100 rounded-full absolute blur-[5rem]" />
         </main>
       </body>
     </html>
