@@ -192,28 +192,11 @@ CIP-0100 is designed for Cardano governance proposals, treasury withdrawals, and
 
 ## Sharing System
 
-The application includes a robust sharing system for verification results:
+The application uses an innovative **compression-based sharing system** for verification results that prioritizes data integrity and URL efficiency:
 
-### Features
+### Architecture Overview
 
-- **Short URLs**: Generate short, shareable URLs for verification results
-- **Security**: Results stored server-side with unique IDs, not in URLs
-- **Expiration**: Shared results automatically expire after 24 hours
-- **Cross-Standard**: Works with all verification types (CIP-8, CIP-30, CIP-100)
-- **Clipboard Integration**: One-click copying of share URLs
-
-### Usage
-
-1. Complete any verification process
-2. Click the "Share Result" button
-3. URL is automatically copied to clipboard
-4. Share the URL with others to view the verification result
-
-### Technical Implementation
-
-- Server-side storage using in-memory Map (production should use Redis/Database)
-- Automatic cleanup of expired entries
-- RESTful API with POST (create) and GET (retrieve) endpoints
+The sharing system implements a **pure compression approach** where verification data is compressed and embedded directly into URLs when possible, with intelligent fallback to URL shortening for larger datasets.
 
 ## Setting Up and Running the Project
 
