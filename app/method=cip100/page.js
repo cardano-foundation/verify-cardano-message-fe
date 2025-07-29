@@ -253,15 +253,15 @@ export default function CIP100Verification() {
                         {result.authors.map((author, index) => (
                           <div
                             key={index}
-                            className={`border rounded-lg p-4 ${
+                            className={`border rounded-lg p-4 overflow-hidden ${
                               author.valid
                                 ? "border-green-200 bg-green-50"
                                 : "border-red-200 bg-red-50"
                             }`}
                           >
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                <h4 className="font-semibold text-gray-800 mb-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-semibold text-gray-800 mb-2 break-words">
                                   {author.name}
                                 </h4>
                                 <div className="space-y-1 text-sm">
@@ -269,20 +269,20 @@ export default function CIP100Verification() {
                                     <span className="font-medium">
                                       Algorithm:
                                     </span>{" "}
-                                    {author.witnessAlgorithm}
+                                    <span className="break-words">{author.witnessAlgorithm}</span>
                                   </p>
-                                  <p>
+                                  <div>
                                     <span className="font-medium">
                                       Public Key:
                                     </span>
-                                    <span className="font-mono break-all text-xs ml-1">
+                                    <div className="font-mono text-xs mt-1 p-2 bg-gray-100 rounded border break-all overflow-hidden">
                                       {author.publicKey}
-                                    </span>
-                                  </p>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                               <div
-                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${
                                   author.valid
                                     ? "bg-green-100 text-green-800"
                                     : "bg-red-100 text-red-800"
@@ -293,8 +293,8 @@ export default function CIP100Verification() {
                             </div>
 
                             {author.error && (
-                              <div className="mt-3 p-2 bg-red-100 rounded-md">
-                                <p className="text-red-700 text-sm">
+                              <div className="mt-3 p-2 bg-red-100 rounded-md overflow-hidden">
+                                <p className="text-red-700 text-sm break-words">
                                   {author.error}
                                 </p>
                               </div>
@@ -304,8 +304,8 @@ export default function CIP100Verification() {
                               <summary className="cursor-pointer text-sm text-gray-600 hover:text-gray-800">
                                 Show signature details
                               </summary>
-                              <div className="mt-2 p-2 bg-gray-100 rounded-md">
-                                <p className="text-xs font-mono break-all">
+                              <div className="mt-2 p-2 bg-gray-100 rounded-md overflow-hidden">
+                                <p className="text-xs font-mono break-all overflow-wrap-anywhere">
                                   {author.signature}
                                 </p>
                               </div>
