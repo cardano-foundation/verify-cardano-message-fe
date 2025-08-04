@@ -9,7 +9,6 @@ import cip0008Data from "../data/cip0008example.json";
 import cip0030Data from "../data/cip0030example.json";
 import TooltipIcon from "../components/TooltipIcon";
 import ResetIcon from "../components/ResetIcon";
-import ShareButton from "../components/ShareButton";
 import { Navigation } from "../components/Navigation";
 
 const SignatureVerification = () => {
@@ -132,12 +131,12 @@ const SignatureVerification = () => {
                       cip8Status || cip30Status
                         ? "bg-green-700/90"
                         : "bg-red-800/90"
-                    } px-4 py-2 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform`}
+                    } px-5 py-3 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform`}
                   >
-                    <div className="flex justify-between items-center">
-                      <span className="flex items-center text-sm font-semibold text-white">
+                    <div className="flex justify-center items-center">
+                      <span className="flex items-center text-lg font-semibold text-white transition-all duration-300">
                         <span
-                          className={`inline-block w-2 h-2 rounded-full mr-2 ${
+                          className={`inline-block w-3 h-3 rounded-full mr-2 ${
                             cip8Status || cip30Status
                               ? "bg-green-300"
                               : "bg-red-300"
@@ -148,23 +147,9 @@ const SignatureVerification = () => {
                         {cip8Status && " (CIP-0008)"}
                         {cip30Status && !cip8Status && " (CIP-0030)"}
                       </span>
-                      <ShareButton
-                        data={{
-                          publicKey,
-                          message,
-                          signature,
-                        }}
-                        result={{
-                          cip8Status,
-                          cip30Status,
-                          isPrefixAppended,
-                        }}
-                        type="cip8"
-                        className="text-white/90 bg-white/10 hover:bg-white/20 border-white/20"
-                      />
                     </div>
                     {isPrefixAppended && (
-                      <div className="text-center text-white/90 text-xs mt-1">
+                      <div className="text-center text-white/90 text-sm mt-2">
                         Prefix automatically applied
                       </div>
                     )}

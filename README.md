@@ -2,21 +2,23 @@
 
 ## Introduction
 
-The Cardano Message Verification Tool is a web application that allows users to verify the authenticity of messages signed on Cardano. It supports multiple verification standards and includes advanced features for sharing and collaboration:
+The Cardano Message Verification Tool is a web application that allows users to verify the authenticity of messages signed on Cardano. It supports multiple verification standards:
 
 - **CIP-0008**: A standard for signing and verifying arbitrary message data
 - **CIP-0030**: A standard for dApp-wallet web bridge that includes message signing capabilities
 - **CIP-0100**: A standard for governance metadata with comprehensive author verification
-- **Result Sharing**: Share verification results with others via secure short URLs
 - **Example Data**: Load pre-configured examples to understand expected formats
+
+## Roadmap & Backlog
+
+- **Result Sharing**: Ability to share verification results via URLs (planned for future release)
 
 ## Project Architecture
 
 - **Frontend**: React components for user interaction with gradient backgrounds and responsive design
-- **API Routes**: Server-side verification logic and result sharing endpoints
+- **API Routes**: Server-side verification logic endpoints
 - **Utility Functions**: Shared helper functions for verification across different standards
 - **Data Examples**: Sample verification data for testing and demonstration
-- **Sharing System**: Server-side storage for sharing verification results
 
 ### High-Level Architecture Diagram
 
@@ -26,12 +28,12 @@ The Cardano Message Verification Tool is a web application that allows users to 
 │                                                 │
 │  ┌─────────────────────────────────────────┐    │
 │  │            Frontend UI                  │    │
-│  │  (Forms, Results, Share Buttons)        │    │
+│  │     (Forms, Results Display)            │    │
 │  └──────────────────┬──────────────────────┘    │
 │                     │                           │
 │  ┌──────────────────▼──────────────────────┐    │
 │  │          API Route Layer                │    │
-│  │  (Verification, Sharing, Storage)       │    │
+│  │        (Verification Logic)             │    │
 │  └──────────────────┬──────────────────────┘    │
 │                     │                           │
 │  ┌──────────────────▼──────────────────────┐    │
@@ -48,20 +50,14 @@ The Cardano Message Verification Tool is a web application that allows users to 
 │   ├── api/                  # Backend API routes
 │   │   ├── verify/           # CIP-8/30 verification endpoint
 │   │   │   └── route.ts      # API handler for CIP-8/30 verification
-│   │   ├── verify-cip100/    # CIP-100 verification endpoint
-│   │   │   └── route.js      # API handler for CIP-100 verification
-│   │   └── share/            # Result sharing endpoint
-│   │       └── route.js      # API handler for sharing/retrieving results
+│   │   └── verify-cip100/    # CIP-100 verification endpoint
+│   │       └── route.js      # API handler for CIP-100 verification
 │   ├── cip100/               # CIP-100 verification page
 │   ├── method=cip100/        # Alternative CIP-100 route
 │   │   └── page.js           # CIP-100 verification UI
-│   ├── shared/               # Shared results display
-│   │   └── [shareId]/        # Dynamic route for shared results
-│   │       └── page.js       # Shared result viewer
 │   ├── disclaimer/           # Legal disclaimer page
 │   │   └── page.js           # Disclaimer content
 │   ├── components/           # Reusable React components
-│   │   ├── ShareButton.js    # Share functionality component
 │   │   ├── Navigation.js     # Site navigation
 │   │   └── ...               # Other UI components
 │   ├── not-found.js          # Custom 404 page
@@ -81,17 +77,13 @@ The Cardano Message Verification Tool is a web application that allows users to 
 
 ### Frontend
 
-- **`app/page.js`**: The main CIP-8/30 verification page with form, results display, and sharing functionality. Features gradient background and example loading.
+- **`app/page.js`**: The main CIP-8/30 verification page with form and results display. Features gradient background and example loading.
 
 - **`app/method=cip100/page.js`**: Dedicated CIP-100 governance metadata verification page with specialized form fields and validation.
-
-- **`app/shared/[shareId]/page.js`**: Dynamic page for displaying shared verification results from short URLs.
 
 - **`app/disclaimer/page.js`**: Legal disclaimer page with navigation and consistent styling.
 
 - **`app/not-found.js`**: Custom 404 error page with navigation and branding.
-
-- **`components/ShareButton.js`**: Reusable component for sharing verification results with clipboard integration.
 
 - **`components/Navigation.js`**: Site navigation component used across all pages.
 
@@ -100,8 +92,6 @@ The Cardano Message Verification Tool is a web application that allows users to 
 - **`app/api/verify/route.ts`**: API endpoint for CIP-8/30 verification that processes requests and returns verification results.
 
 - **`app/api/verify-cip100/route.js`**: Specialized API endpoint for CIP-100 governance metadata verification with author witness validation.
-
-- **`app/api/share/route.js`**: API endpoint for storing and retrieving shared verification results with 24-hour expiration.
 
 ### Verification Logic
 
@@ -137,7 +127,7 @@ The CIP-0008 verification process follows these steps:
    - Executes cryptographic verification using Cardano-specific algorithms
    - Returns the verification result (valid/invalid)
 
-4. The result is displayed to the user with option to share
+4. The result is displayed to the user
 
 The CIP-0008 standard is specifically designed for signing and verifying arbitrary message data on Cardano, with a standardized format for representing signatures.
 
@@ -158,7 +148,7 @@ CIP-0030 verification handles messages signed directly via wallet interfaces:
    - Utilizes wallet-specific verification methods
    - Accounts for different signature encodings
 
-3. The verification result is returned to the user with sharing capability
+3. The verification result is returned to the user
 
 CIP-0030 is part of the broader dApp-wallet web bridge specification, enabling web applications to interact with Cardano wallets.
 
@@ -186,17 +176,7 @@ CIP-0100 verification handles governance metadata with comprehensive validation:
    - Schema validation results
    - Hash verification status
 
-4. Results can be shared via secure URLs
-
 CIP-0100 is designed for Cardano governance proposals, treasury withdrawals, and other governance-related metadata with strong authentication requirements.
-
-## Sharing System
-
-The application uses an innovative **compression-based sharing system** for verification results that prioritizes data integrity and URL efficiency:
-
-### Architecture Overview
-
-The sharing system implements a **pure compression approach** where verification data is compressed and embedded directly into URLs when possible, with intelligent fallback to URL shortening for larger datasets.
 
 ## Setting Up and Running the Project
 
@@ -261,10 +241,7 @@ npm start
 
 ### Advanced Features
 
-- **Result Sharing**: Share verification outcomes via secure short URLs
-- **Clipboard Integration**: One-click copying of share links
-- **Automatic Cleanup**: Shared results expire after 24 hours
-- **Cross-Platform**: Works across different devices and browsers
+- **Clipboard Integration**: Copy verification results for easy share
 
 ## Contributing to the Project
 
