@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const InformationSection = ({ fillCIP0008Example, fillCIP0030Example }) => {
   const [showMoreText, setShowMoreText] = useState(false);
@@ -12,6 +12,22 @@ const InformationSection = ({ fillCIP0008Example, fillCIP0030Example }) => {
     fillCIP0030Example();
     setShowMoreText(false);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showMoreText && !event.target.closest(".info-box-content")) {
+        setShowMoreText(false);
+      }
+    };
+
+    if (showMoreText) {
+      document.addEventListener("click", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [showMoreText]);
 
   return (
     <div className="flex justify-center">
@@ -29,7 +45,7 @@ const InformationSection = ({ fillCIP0008Example, fillCIP0030Example }) => {
         </h1>
 
         {showMoreText && (
-          <div className="absolute top-10 left-0 right-0 bg-white border border-cf-blue-200 rounded-lg shadow-lg p-4 z-10">
+          <div className="absolute top-10 left-0 right-0 bg-white border border-cf-blue-200 rounded-lg shadow-lg p-4 z-50 info-box-content">
             <button
               onClick={() => setShowMoreText(false)}
               className="absolute top-2 right-2 text-cf-blue-500 hover:text-cf-blue-700 focus:outline-none"

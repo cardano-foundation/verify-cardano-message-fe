@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import PoweredBy from "../../components/PoweredBy";
 import { Navigation } from "../../components/Navigation";
 import ResetIcon from "../../components/ResetIcon";
-import ShareButton from "../../components/ShareButton";
 import { cip100Example } from "../../data/cip0100example.js";
 
 export default function CIP100Verification() {
@@ -177,14 +176,6 @@ export default function CIP100Verification() {
                           <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
                             <div className="flex justify-between items-center">
                               <div className="text-red-700 flex-1">{error}</div>
-                              {originalJsonData && (
-                                <ShareButton
-                                  data={originalJsonData}
-                                  result={result}
-                                  type="cip100"
-                                  className="text-red-700 bg-red-100 hover:bg-red-200 border-red-300 shrink-0 ml-4"
-                                />
-                              )}
                             </div>
                           </div>
                         )}
@@ -228,14 +219,6 @@ export default function CIP100Verification() {
                         <h2 className="text-2xl font-bold text-cf-blue-900">
                           Author Verification Results
                         </h2>
-                        {originalJsonData && (
-                          <ShareButton
-                            data={originalJsonData}
-                            result={result}
-                            type="cip100"
-                            className="shrink-0"
-                          />
-                        )}
                       </div>
 
                       {result.canonizedHash && (
@@ -269,7 +252,9 @@ export default function CIP100Verification() {
                                     <span className="font-medium">
                                       Algorithm:
                                     </span>{" "}
-                                    <span className="break-words">{author.witnessAlgorithm}</span>
+                                    <span className="break-words">
+                                      {author.witnessAlgorithm}
+                                    </span>
                                   </p>
                                   <div>
                                     <span className="font-medium">
