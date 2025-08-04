@@ -11,25 +11,54 @@ export default function CIP100Verification() {
   const [result, setResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [originalJsonData, setOriginalJsonData] = useState(null);
 
-  // Parse URL parameters on component mount
+  // Parse URL hash and query parameters on mount and hash changes
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const urlParams = new URLSearchParams(window.location.search);
-      // Check for direct rawjson parameter for testing
-      const rawJson = urlParams.get("rawjson");
-      if (rawJson) {
-        try {
-          const decodedJson = decodeURIComponent(rawJson);
-          const parsedJson = JSON.parse(decodedJson);
-          setJsonInput(JSON.stringify(parsedJson, null, 2));
-        } catch (err) {
-          console.error("Failed to parse rawjson parameter:", err);
-          setError("Failed to parse JSON from rawjson parameter");
+    const parseHash = () => {
+      if (typeof window !== "undefined") {
+        const hash = window.location.hash;
+        if (hash.startsWith("#")) {
+          try {
+            const encodedJson = hash.substring(1);
+            const decodedJson = decodeURIComponent(encodedJson);
+            const parsedJson = JSON.parse(decodedJson);
+            setJsonInput(JSON.stringify(parsedJson, null, 2));
+            setError("");
+            setResult(null);
+          } catch (err) {
+            setError("Failed to parse JSON from URL hash");
+          }
+          return;
+        }
+
+        // Fallback to query parameter method (only on initial load)
+        const urlParams = new URLSearchParams(window.location.search);
+        const rawJson = urlParams.get("rawjson");
+        if (rawJson) {
+          try {
+            const decodedJson = decodeURIComponent(rawJson);
+            const parsedJson = JSON.parse(decodedJson);
+            setJsonInput(JSON.stringify(parsedJson, null, 2));
+            setError("");
+          } catch (err) {
+            setError("Failed to parse JSON from rawjson parameter");
+          }
         }
       }
-    }
+    };
+
+    parseHash();
+
+    // Listen for hash changes
+    const handleHashChange = () => {
+      parseHash();
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
   }, []);
 
   const handleSubmit = async (e) => {
@@ -42,7 +71,6 @@ export default function CIP100Verification() {
       let metadata;
       try {
         metadata = JSON.parse(jsonInput);
-        setOriginalJsonData(metadata);
       } catch (err) {
         throw new Error("Invalid JSON format");
       }
@@ -64,7 +92,6 @@ export default function CIP100Verification() {
       setResult(data);
     } catch (err) {
       setError(err.message);
-      setOriginalJsonData(null);
     } finally {
       setIsLoading(false);
     }
