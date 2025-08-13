@@ -18,6 +18,7 @@ const SignatureVerification = () => {
   const [cip8Status, setCip8Status] = useState(null);
   const [cip30Status, setCip30Status] = useState(null);
   const [isPrefixAppended, setIsPrefixAppended] = useState(false);
+  const [signatureStandard, setSignatureStandard] = useState(null);
   const [error, setError] = useState({ cip8: "", cip30: "" });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,11 +42,13 @@ const SignatureVerification = () => {
       }
 
       const data = await response.json();
-      console.log("Verification response:", data);
+      // Uncomment the line below to see the response in the console
+      // console.log("Verification response:", data);
 
       setCip8Status(data.isCip8Verified);
       setCip30Status(data.isCip30Verified);
       setIsPrefixAppended(data.isPrefixAppended);
+      setSignatureStandard(data.signatureStandard);
 
       if (data.error) {
         setError(data.error);
@@ -65,6 +68,7 @@ const SignatureVerification = () => {
     setCip8Status(null);
     setCip30Status(null);
     setIsPrefixAppended(false);
+    setSignatureStandard(null);
     setError({ cip8: "", cip30: "" });
   };
 
@@ -144,15 +148,11 @@ const SignatureVerification = () => {
                         ></span>
                         Result:{" "}
                         {cip8Status || cip30Status ? "VALID" : "INVALID"}
-                        {cip8Status && " (CIP-0008)"}
-                        {cip30Status && !cip8Status && " (CIP-0030)"}
+                        {(cip8Status || cip30Status) && signatureStandard && (
+                          <> ({signatureStandard})</>
+                        )}
                       </span>
                     </div>
-                    {isPrefixAppended && (
-                      <div className="text-center text-white/90 text-sm mt-2">
-                        Prefix automatically applied
-                      </div>
-                    )}
                   </div>
                 )}
               </div>
