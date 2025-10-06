@@ -47,6 +47,16 @@ export const Navigation = () => {
               >
                 CIP-100 Governance Verification
               </Link>
+              <Link
+                href="/api-docs"
+                className={`font-medium transition-colors hover:text-cf-blue-600 ${
+                  pathname === "/api-docs"
+                    ? "border-b-2 border-cf-blue-600 pb-1 text-cf-blue-600"
+                    : "text-gray-700"
+                }`}
+              >
+                API Documentation
+              </Link>
             </div>
           </div>
 
@@ -160,6 +170,17 @@ export const Navigation = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 CIP-100 Governance Verification
+              </Link>
+              <Link
+                href="/api-docs"
+                className={`hover:bg-cf-blue-50 block rounded-md px-3 py-2 text-base font-medium hover:text-cf-blue-600 ${
+                  pathname === "/api-docs"
+                    ? "bg-cf-blue-50 border-l-4 border-cf-blue-600 text-cf-blue-600"
+                    : "text-gray-700"
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                API Documentation
               </Link>
               {/* Mobile External Links */}
               <div className="border-t border-cf-blue-100 pt-2">

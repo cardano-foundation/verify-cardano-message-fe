@@ -338,18 +338,20 @@ async function performVerification(
   const isCoseFormat = signature.startsWith("84");
 
   if (isCoseFormat) {
+    // COSE format is CIP-0030
     try {
       const result = await verifyCIP8(signature, publicKey, messageHex, true);
       if (result.verified) {
-        isCip8Verified = true;
+        isCip30Verified = true;
       } else {
-        error.cip8 = result.error || "CIP-8 verification failed";
+        error.cip30 = result.error || "CIP-30 verification failed";
       }
     } catch (err) {
-      error.cip8 =
-        err instanceof Error ? err.message : "CIP-8 verification error";
+      error.cip30 =
+        err instanceof Error ? err.message : "CIP-30 verification error";
     }
   } else {
+    // Raw format is CIP-0008
     try {
       const result = verifyRawCIP8(cleanPublicKey, messageHex, signature);
       if (result.verified) {
@@ -363,8 +365,8 @@ async function performVerification(
     }
   }
 
-  // If CIP-8 failed and we have a COSE format, try fallback with embedded payload
-  if (!isCip8Verified && isCoseFormat) {
+  // If CIP-30 failed and we have a COSE format, try fallback with embedded payload
+  if (!isCip30Verified && isCoseFormat) {
     try {
       // Try to decode COSE_Sign1 and check for embedded payload
       const coseBuffer = Buffer.from(signature, "hex");
@@ -390,10 +392,8 @@ async function performVerification(
             const result = await verifyCIP8(signature, publicKey, embeddedHex);
             if (result.verified) {
               isCip30Verified = true;
-              isCip8Verified = true;
               isPrefixAppended = embeddedText === prefixedMessage;
-              error.cip30 = ""; // Clear error since verification succeeded
-              error.cip8 = "";
+              error.cip30 = "";
             }
           }
         }
@@ -452,7 +452,7 @@ async function performVerification(
   }
 
   // Final fallback: try alternative COSE parsing only if no embedded payload comparison was attempted
-  if (!isCip8Verified && !isCip30Verified && isCoseFormat) {
+  if (!isCip30Verified && isCoseFormat) {
     try {
       // Only use this fallback if there's no embedded payload that we should validate against
       const coseBuffer = Buffer.from(signature, "hex");
@@ -482,9 +482,7 @@ async function performVerification(
       const result = await verifyCIP8(signature, publicKey);
       if (result.verified) {
         isCip30Verified = true;
-        isCip8Verified = true;
         error.cip30 = ""; // Clear error since verification succeeded
-        error.cip8 = "";
       }
     } catch (err) {
       error.cip30 =
