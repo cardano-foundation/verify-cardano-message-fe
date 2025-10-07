@@ -89,7 +89,7 @@ export default function CIP100Verification() {
         throw new Error(data.error || "Verification failed");
       }
 
-      setResult(data);
+      setResult(data.data);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -235,7 +235,6 @@ export default function CIP100Verification() {
                 </div>
               </div>
 
-              {/* Right Column - Results */}
               <div className="backdrop-blur-sm bg-white/80 border border-cf-blue-200 rounded-xl shadow-xl overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cf-blue-400 via-cf-blue-500 to-cf-blue-400"></div>
 

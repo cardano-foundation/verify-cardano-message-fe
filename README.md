@@ -12,6 +12,7 @@ The Cardano Message Verification Tool is a web application that allows users to 
 ## Roadmap & Backlog
 
 - **Result Sharing**: Ability to share verification results via URLs (planned for future release)
+- **Enhanced Rate Limiting**: Consider distributed rate limiting for multi-instance deployments
 
 ## Project Architecture
 
@@ -23,35 +24,40 @@ The Cardano Message Verification Tool is a web application that allows users to 
 ### High-Level Architecture Diagram
 
 ```
-┌─────────────────────────────────────────────────┐
-│                 Next.js App                     │
-│                                                 │
-│  ┌─────────────────────────────────────────┐    │
-│  │            Frontend UI                  │    │
-│  │     (Forms, Results Display)            │    │
-│  └──────────────────┬──────────────────────┘    │
-│                     │                           │
-│  ┌──────────────────▼──────────────────────┐    │
-│  │          API Route Layer                │    │
-│  │        (Verification Logic)             │    │
-│  └──────────────────┬──────────────────────┘    │
-│                     │                           │
-│  ┌──────────────────▼──────────────────────┐    │
-│  │         Verification Logic              │    │
-│  │ (CIP-0008, CIP-0030, CIP-0100)          │    │
-│  └─────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                    Next.js App                          │
+│                                                         │
+│  ┌─────────────────────────────────────────────┐        │
+│  │              Frontend UI                    │        │
+│  │       (Forms, Results Display)              │        │
+│  └────────────────────┬────────────────────────┘        │
+│                       │                                 │
+│  ┌────────────────────▼────────────────────────┐        │
+│  │           API Route Layer                   │        │
+│  │    ┌──────────────────────────────┐         │        │
+│  │    │    Security Middleware        │        │        │
+│  │    │  • Rate Limiting              │        │        │
+│  │    │  • SSRF Protection            │        │        │
+│  │    │  • Input Validation           │        │        │
+│  │    └──────────┬───────────────────┘         │        │
+│  │               │                             │        │
+│  │    ┌──────────▼───────────────────┐         │        │
+│  │    │   Verification Logic          │        │        │
+│  │    │ (CIP-8, CIP-30, CIP-100)      │        │        │
+│  │    └───────────────────────────────┘        │        │
+│  └─────────────────────────────────────────────┘        │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ## Project Structure
 
 ```
 ├── app/                      # Next.js App Router structure
-│   ├── api/                  # Backend API routes
+│   ├── api/                  # Backend API routes with security
 │   │   ├── verify/           # CIP-8/30 verification endpoint
 │   │   │   └── route.ts      # API handler for CIP-8/30 verification
 │   │   └── verify-cip100/    # CIP-100 verification endpoint
-│   │       └── route.js      # API handler for CIP-100 verification
+│   │       └── route.js      # Secured API handler with SSRF protection
 │   ├── cip100/               # CIP-100 verification page
 │   ├── method=cip100/        # Alternative CIP-100 route
 │   │   └── page.js           # CIP-100 verification UI
@@ -67,8 +73,10 @@ The Cardano Message Verification Tool is a web application that allows users to 
 │   ├── cip0030example.json   # Example of CIP-0030 format
 │   └── cip0100example.js     # Example of CIP-0100 format (JS export)
 ├── components/               # Shared components
-├── lib/                      # Utility functions
-│   └── cip100-verification.js # CIP-100 specific verification logic
+├── lib/                      # Utility functions and security
+│   ├── cip100-verification.js # CIP-100 specific verification logic
+│   ├── rate-limiter.js       # In-memory rate limiting
+│   └── security.js           # IP validation and complexity checks
 ├── public/                   # Static assets
 └── styles/                   # CSS and styling files
 ```
@@ -91,7 +99,19 @@ The Cardano Message Verification Tool is a web application that allows users to 
 
 - **`app/api/verify/route.ts`**: API endpoint for CIP-8/30 verification that processes requests and returns verification results.
 
-- **`app/api/verify-cip100/route.js`**: Specialized API endpoint for CIP-100 governance metadata verification with author witness validation.
+- **`app/api/verify-cip100/route.js`**: Secured API endpoint for CIP-100 governance metadata verification with:
+  - URL-based metadata fetching (GET `?url=<metadata-url>`)
+  - Direct JSON submission (POST with `{ metadata: {...} }`)
+  - Complete SSRF protection and rate limiting
+  - Author witness validation
+
+### Security Modules
+
+- **`lib/rate-limiter.js`**: In-memory rate limiting (20 requests/minute per IP) with automatic cleanup.
+
+- **`lib/security.js`**: Security utilities including:
+  - `isPrivateIp()`: IPv4/IPv6 validation against private/loopback/link-local ranges
+  - `checkJsonComplexity()`: Prevents compute bombs via depth and key count limits
 
 ### Verification Logic
 
@@ -154,23 +174,68 @@ CIP-0030 is part of the broader dApp-wallet web bridge specification, enabling w
 
 ### CIP-0100 Verification
 
-CIP-0100 verification handles governance metadata with comprehensive validation:
+CIP-0100 verification handles governance metadata with comprehensive validation and security:
 
-1. The frontend collects:
+#### Two Methods of Verification
 
-   - JSON-LD governance metadata
-   - Hash algorithm specification
-   - Author information with witnesses
+**1. URL-based (GET)** - Recommended for public metadata:
 
-2. The API performs multi-layer verification:
+```bash
+GET /api/verify-cip100?url=<metadata-url>
+```
+
+- Fetches metadata from GitHub, IPFS, or any public URL
+- Validates URL and performs DNS lookup to prevent SSRF
+- 10-second timeout for fetching
+- 5MB size limit
+- Content-type validation
+
+**2. Direct JSON (POST)** - For local or private metadata:
+
+```bash
+POST /api/verify-cip100
+Content-Type: application/json
+
+{
+  "metadata": { ... }
+}
+```
+
+- Direct submission of governance metadata
+- 5MB request body limit
+- JSON complexity validation
+
+#### Security Layers
+
+1. **Rate Limiting**: 20 requests/minute per IP
+2. **URL Validation**:
+   - HTTPS-only in production
+   - DNS rebinding protection
+   - Blocks private IPs (10.x, 192.168.x, 172.16-31.x)
+   - Blocks IPv6 private ranges (fe80::/10, fc00::/7)
+   - Blocks cloud metadata endpoints
+3. **Content Protection**:
+   - 5MB size limit
+   - 10-second timeout
+   - Redirect blocking
+   - JSON complexity validation (max depth: 20, max keys: 1000)
+
+#### Verification Process
+
+1. The API performs security validation:
+
+   - Rate limit check
+   - URL/IP validation (for GET requests)
+   - Size and complexity checks
+
+2. Multi-layer verification:
 
    - JSON-LD context validation
    - Schema compliance checking
    - Author witness cryptographic verification
-   - Hash algorithm validation
+   - Hash algorithm validation (Blake2b-256, SHA-256)
 
 3. Detailed results show:
-
    - Overall verification status
    - Individual author verification results
    - Schema validation results
@@ -182,7 +247,7 @@ CIP-0100 is designed for Cardano governance proposals, treasury withdrawals, and
 
 ### Prerequisites
 
-- Node.js (version 16.x or later)
+- Node.js (version 20.x or later recommended)
 - npm or yarn
 
 ### Installation Steps
@@ -214,6 +279,41 @@ CIP-0100 is designed for Cardano governance proposals, treasury withdrawals, and
 - **CIP-100 Verification**: `http://localhost:3000/method=cip100` - Governance metadata verification
 - **Disclaimer**: `http://localhost:3000/disclaimer` - Legal information
 
+### API Endpoints
+
+#### CIP-8/30 Verification
+
+```bash
+GET /api/verify?publicKey=<hex>&message=<text>&signature=<hex>
+```
+
+#### CIP-100 URL Verification
+
+```bash
+GET /api/verify-cip100?url=<metadata-url>
+
+# Example
+curl "http://localhost:3000/api/verify-cip100?url=https://ipfs.io/ipfs/bafkreihk5qt5tgbojnno7eymbm2urm6y6jkt4yqfxdzh3agnj47zuv7lpe"
+```
+
+#### CIP-100 Direct Verification
+
+```bash
+POST /api/verify-cip100
+Content-Type: application/json
+
+{
+  "metadata": {
+    "@context": { ... },
+    "hashAlgorithm": "blake2b-256",
+    "body": { ... },
+    "authors": [ ... ]
+  }
+}
+```
+
+**Rate Limits**: All endpoints are rate-limited to 20 requests per minute per IP address.
+
 ### Building for Production
 
 To build the application for production:
@@ -241,7 +341,9 @@ npm start
 
 ### Advanced Features
 
-- **Clipboard Integration**: Copy verification results for easy share
+- **Clipboard Integration**: Copy verification results for easy sharing
+- **URL-based Verification**: Fetch and verify metadata from any public URL
+- **Multi-format Support**: Handles various content types and encodings
 
 ## Contributing to the Project
 
@@ -252,9 +354,10 @@ We welcome contributions to improve the Cardano Message Verification Tool. Here'
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
-4. Commit your changes (`git commit -m 'Add some amazing feature'`)
-5. Push to the branch (`git push origin feature/amazing-feature`)
-6. Open a Pull Request
+4. Run tests to ensure security features still work
+5. Commit your changes (`git commit -m 'Add some amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
 
 ## License
 
