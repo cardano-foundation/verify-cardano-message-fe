@@ -472,7 +472,7 @@ async function performVerification(
           isPrefixAppended,
           error,
           signatureFormat: isCoseFormat ? "COSE_Sign1" : "Raw",
-          signatureStandard: isCoseFormat ? "CIP-0030" : "CIP-0008",
+          signatureStandard: isCoseFormat ? "CIP-0030 version of CIP-0008" : "CIP-0008",
           messageHex,
           cleanPublicKey,
         };
@@ -506,7 +506,7 @@ async function performVerification(
     isPrefixAppended,
     error,
     signatureFormat: isCoseFormat ? "COSE_Sign1" : "Raw",
-    signatureStandard: isCoseFormat ? "CIP-0030" : "CIP-0008",
+    signatureStandard: isCoseFormat ? "CIP-0030 version of CIP-0008" : "CIP-0008",
     messageHex,
     cleanPublicKey,
   };
@@ -554,7 +554,7 @@ export async function POST(request: Request) {
     const valid = result.isCip8Verified || result.isCip30Verified;
     const signatureStandard =
       result.signatureStandard ||
-      (result.isCip30Verified ? "CIP-0030" : "CIP-0008");
+      (result.isCip30Verified ? "CIP-0030 version of CIP-0008" : "CIP-0008");
 
     return NextResponse.json({
       valid,
