@@ -35,7 +35,7 @@ const InformationSection = ({ fillCIP0008Example, fillCIP0030Example }) => {
         <h1 className="mt-4 text-sm font-normal mb-6 text-cf-blue-900 text-justify">
           This tool verifies signed messages for Cardano public keys in the
           browser. It can also verify the authors' signatures of Cardano
-          Governance Action proposals.{" "}
+          governance metadata.{" "}
           <span
             className="text-blue-500 cursor-pointer text-sm font-normal"
             onClick={() => setShowMoreText(!showMoreText)}
@@ -69,7 +69,7 @@ const InformationSection = ({ fillCIP0008Example, fillCIP0030Example }) => {
 
             <p className="text-sm text-cf-blue-900 text-justify mx-3">
               Signing messages on Cardano can be used to prove ownership of an
-              address(e.g. as alternative to a
+              address (e.g. as alternative to a
               <a
                 className="text-blue-500"
                 href="https://www.21analytics.ch/what-is-a-satoshi-test/"
@@ -92,7 +92,7 @@ const InformationSection = ({ fillCIP0008Example, fillCIP0030Example }) => {
                 {" "}
                 CIP-0008{" "}
               </a>
-              ,
+              (including the
               <a
                 className="text-blue-500"
                 href="https://cips.cardano.org/cip/CIP-0030"
@@ -102,6 +102,7 @@ const InformationSection = ({ fillCIP0008Example, fillCIP0030Example }) => {
                 {" "}
                 CIP-0030{" "}
               </a>
+              implementation)
               and
               <a
                 className="text-blue-500"
@@ -110,10 +111,9 @@ const InformationSection = ({ fillCIP0008Example, fillCIP0030Example }) => {
                 rel="noopener noreferrer"
               >
                 {" "}
-                CIP-0100{" "}
+                CIP-0100
               </a>
-              , given a public key, e.g. of a Cardano address and the signature
-              of the message.
+              , given a public key, the message and the signature.
             </p>
             <div className="flex justify-center gap-4 text-sm mt-2">
               <span className="text-cf-blue-800">Try it Out:</span>
