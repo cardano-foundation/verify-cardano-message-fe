@@ -239,7 +239,7 @@ export default function CIP100Verification() {
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cf-blue-400 via-cf-blue-500 to-cf-blue-400"></div>
 
                 <div className="p-8">
-                  {result && result.authors && result.authors.length > 0 ? (
+                  {result && (result.canonizedHash || (result.authors && result.authors.length > 0)) ? (
                     <div>
                       <div className="flex justify-between items-center mb-6">
                         <h2 className="text-2xl font-bold text-cf-blue-900">
@@ -258,7 +258,7 @@ export default function CIP100Verification() {
                         </div>
                       )}
 
-                      <div className="space-y-4 max-h-96 overflow-y-auto">
+                      {result.authors && result.authors.length > 0 && <div className="space-y-4 max-h-96 overflow-y-auto">
                         {result.authors.map((author, index) => (
                           <div
                             key={index}
@@ -323,7 +323,7 @@ export default function CIP100Verification() {
                             </details>
                           </div>
                         ))}
-                      </div>
+                      </div>}
 
                       {result.body && (
                         <details className="mt-6">
