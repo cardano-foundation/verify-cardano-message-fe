@@ -21,6 +21,7 @@ const SignatureVerification = () => {
   const [signatureStandard, setSignatureStandard] = useState(null);
   const [error, setError] = useState({ cip8: "", cip30: "" });
   const [isLoading, setIsLoading] = useState(false);
+  const [signerAddress, setSignerAddress] = useState(null);
 
   // Handle signature verification
   const handleVerifySignature = async () => {
@@ -49,6 +50,7 @@ const SignatureVerification = () => {
       setCip30Status(data.isCip30Verified);
       setIsPrefixAppended(data.isPrefixAppended);
       setSignatureStandard(data.signatureStandard);
+      setSignerAddress(data.signerAddress || null);
 
       if (data.error) {
         setError(data.error);
@@ -70,6 +72,7 @@ const SignatureVerification = () => {
     setIsPrefixAppended(false);
     setSignatureStandard(null);
     setError({ cip8: "", cip30: "" });
+    setSignerAddress(null);
   };
 
   const handleReset = () => {
@@ -156,6 +159,15 @@ const SignatureVerification = () => {
                   </div>
                 )}
               </div>
+
+              {(cip8Status || cip30Status) && signerAddress && (
+                <div className="mb-6 border border-cf-blue-200 bg-cf-blue-50/80 px-5 py-3 rounded-lg shadow-sm">
+                  <div className="text-sm text-cf-blue-700 mb-1">Signed by:</div>
+                  <div className="font-mono text-xs break-all text-cf-blue-900">
+                    {signerAddress}
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-4">
                 <div className="relative">

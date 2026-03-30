@@ -3,6 +3,7 @@ import { Buffer } from "buffer";
 import * as cbor from "cbor";
 import { ed25519 } from "@noble/curves/ed25519";
 import { blake2b } from "blake2b";
+import { deriveEnterpriseAddress, bech32EncodeAddress } from "../../../lib/address.js";
 
 async function verifyCIP8(
   coseSign1Hex: string,
@@ -500,6 +501,31 @@ async function performVerification(
     }
   }
 
+  // Derive signer address on successful verification
+  let signerAddress: string | null = null;
+  if (isCip8Verified || isCip30Verified) {
+    try {
+      if (isCip30Verified && isCoseFormat) {
+        // Extract address from COSE_Sign1 protected header
+        const coseBuffer = Buffer.from(signature, "hex");
+        const coseArray = cbor.decode(coseBuffer);
+        if (Array.isArray(coseArray) && coseArray.length >= 1) {
+          const protHeader = cbor.decode(coseArray[0]);
+          const addrBytes = protHeader.get("address");
+          if (addrBytes && (Buffer.isBuffer(addrBytes) || addrBytes instanceof Uint8Array)) {
+            signerAddress = bech32EncodeAddress(addrBytes);
+          }
+        }
+      }
+      // Fallback: derive enterprise address from public key
+      if (!signerAddress && cleanPublicKey.length === 64) {
+        signerAddress = deriveEnterpriseAddress(cleanPublicKey);
+      }
+    } catch {
+      // Address derivation failure should never break verification
+    }
+  }
+
   return {
     isCip8Verified,
     isCip30Verified,
@@ -509,6 +535,7 @@ async function performVerification(
     signatureStandard: isCoseFormat ? "CIP-0030 version of CIP-0008" : "CIP-0008",
     messageHex,
     cleanPublicKey,
+    signerAddress,
   };
 }
 
@@ -531,6 +558,7 @@ export async function GET(request) {
     signatureStandard: result.signatureStandard,
     messageHex: result.messageHex,
     cleanPublicKey: result.cleanPublicKey,
+    signerAddress: result.signerAddress,
   });
 }
 
@@ -559,6 +587,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       valid,
       signatureStandard,
+      signerAddress: valid ? result.signerAddress : undefined,
       error: valid
         ? undefined
         : result.error.cip8 || result.error.cip30 || "Verification failed",
