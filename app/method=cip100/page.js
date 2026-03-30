@@ -290,6 +290,16 @@ export default function CIP100Verification() {
                                       {author.publicKey}
                                     </div>
                                   </div>
+                                  {author.signerAddress && (
+                                    <div className="mt-1">
+                                      <span className="font-medium">
+                                        Address:
+                                      </span>
+                                      <div className="font-mono text-xs mt-1 p-2 bg-gray-100 rounded border break-all overflow-hidden">
+                                        {author.signerAddress}
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                               <div
