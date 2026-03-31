@@ -3,7 +3,7 @@ import { Buffer } from "buffer";
 import * as cbor from "cbor";
 import { ed25519 } from "@noble/curves/ed25519";
 import { blake2b } from "blake2b";
-import { deriveEnterpriseAddress, bech32EncodeAddress } from "../../../lib/address.js";
+import { deriveEnterpriseAddress, bech32EncodeAddress, getAddressTypeName, bech32EncodeAddressForNetwork } from "../../../lib/address.js";
 
 async function verifyCIP8(
   coseSign1Hex: string,
@@ -502,7 +502,13 @@ async function performVerification(
   }
 
   // Derive signer address on successful verification
-  let signerAddress: string | null = null;
+  let signerAddress: {
+    mainnet: string;
+    testnet: string;
+    addressType: string;
+    source: string;
+    originalNetwork: number;
+  } | null = null;
   if (isCip8Verified || isCip30Verified) {
     try {
       if (isCip30Verified && isCoseFormat) {
@@ -513,13 +519,26 @@ async function performVerification(
           const protHeader = cbor.decode(coseArray[0]);
           const addrBytes = protHeader.get("address");
           if (addrBytes && (Buffer.isBuffer(addrBytes) || addrBytes instanceof Uint8Array)) {
-            signerAddress = bech32EncodeAddress(addrBytes);
+            const buf = Buffer.isBuffer(addrBytes) ? addrBytes : Buffer.from(addrBytes);
+            signerAddress = {
+              mainnet: bech32EncodeAddressForNetwork(buf, 1),
+              testnet: bech32EncodeAddressForNetwork(buf, 0),
+              addressType: getAddressTypeName(buf),
+              source: "cose-header",
+              originalNetwork: buf[0] & 0x0f,
+            };
           }
         }
       }
       // Fallback: derive enterprise address from public key
       if (!signerAddress && cleanPublicKey.length === 64) {
-        signerAddress = deriveEnterpriseAddress(cleanPublicKey);
+        signerAddress = {
+          mainnet: deriveEnterpriseAddress(cleanPublicKey, 1),
+          testnet: deriveEnterpriseAddress(cleanPublicKey, 0),
+          addressType: "Enterprise",
+          source: "derived",
+          originalNetwork: 1,
+        };
       }
     } catch {
       // Address derivation failure should never break verification
