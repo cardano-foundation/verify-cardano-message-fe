@@ -22,6 +22,7 @@ const SignatureVerification = () => {
   const [error, setError] = useState({ cip8: "", cip30: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [signerAddress, setSignerAddress] = useState(null);
+  const [showTestnet, setShowTestnet] = useState(false);
 
   // Handle signature verification
   const handleVerifySignature = async () => {
@@ -51,6 +52,7 @@ const SignatureVerification = () => {
       setIsPrefixAppended(data.isPrefixAppended);
       setSignatureStandard(data.signatureStandard);
       setSignerAddress(data.signerAddress || null);
+      setShowTestnet(data.signerAddress?.originalNetwork === 0);
 
       if (data.error) {
         setError(data.error);
@@ -73,6 +75,7 @@ const SignatureVerification = () => {
     setSignatureStandard(null);
     setError({ cip8: "", cip30: "" });
     setSignerAddress(null);
+    setShowTestnet(false);
   };
 
   const handleReset = () => {
@@ -162,9 +165,52 @@ const SignatureVerification = () => {
 
               {(cip8Status || cip30Status) && signerAddress && (
                 <div className="mb-6 border border-cf-blue-200 bg-cf-blue-50/80 px-5 py-3 rounded-lg shadow-sm">
-                  <div className="text-sm text-cf-blue-700 mb-1">Signed by:</div>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm text-cf-blue-600">Signed by:</span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs bg-cf-blue-100 text-cf-blue-500 px-2 py-0.5 rounded-full">
+                        {signerAddress.addressType}
+                      </span>
+                      {signerAddress.source === "derived" && (
+                        <div className="has-tooltip relative">
+                          <TooltipIcon />
+                          <span className="tooltip absolute top-[1.125rem] right-0 left-auto bg-gray-800 text-white text-xs rounded py-2 px-3 min-w-[260px] border border-gray-700 shadow-2xl backdrop-blur-sm">
+                            This address was derived from the public key. CIP-8 raw
+                            signatures do not embed an address, so an enterprise
+                            address is computed from the key hash.
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                   <div className="font-mono text-xs break-all text-cf-blue-900">
-                    {signerAddress}
+                    {showTestnet ? signerAddress.testnet : signerAddress.mainnet}
+                  </div>
+                  <div className="flex justify-end mt-2">
+                    <div className="inline-flex rounded-full border border-cf-blue-200 overflow-hidden text-xs">
+                      <button
+                        type="button"
+                        onClick={() => setShowTestnet(false)}
+                        className={`px-3 py-1 transition-colors ${
+                          !showTestnet
+                            ? "bg-cf-blue-500 text-white"
+                            : "text-cf-blue-500 hover:bg-cf-blue-50"
+                        }`}
+                      >
+                        Mainnet
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowTestnet(true)}
+                        className={`px-3 py-1 transition-colors ${
+                          showTestnet
+                            ? "bg-cf-blue-500 text-white"
+                            : "text-cf-blue-500 hover:bg-cf-blue-50"
+                        }`}
+                      >
+                        Testnet
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
